@@ -1,5 +1,5 @@
-LootReserve = LootReserve or { };
-LootReserve.Client =
+LootReserveHoU = LootReserveHoU or { };
+LootReserveHoU.Client =
 {
     -- Server Connection
     SessionServer = nil,
@@ -55,9 +55,9 @@ LootReserve.Client =
     SelectedCategory = nil,
 };
 
-function LootReserve.Client:Load()
-    LootReserveCharacterSave.Client = LootReserveCharacterSave.Client or { };
-    LootReserveGlobalSave.Client = LootReserveGlobalSave.Client or { };
+function LootReserveHoU.Client:Load()
+    LootReserveHoUCharacterSave.Client = LootReserveHoUCharacterSave.Client or { };
+    LootReserveHoUGlobalSave.Client = LootReserveHoUGlobalSave.Client or { };
 
     -- Copy data from saved variables into runtime tables
     -- Don't outright replace tables, as new versions of the addon could've added more fields that would be missing in the saved data
@@ -73,45 +73,45 @@ function LootReserve.Client:Load()
             from[field] = to[field];
         end
     end
-    loadInto(self, LootReserveGlobalSave.Client, "Settings");
-    loadInto(self, LootReserveCharacterSave.Client, "CharacterFavorites");
-    loadInto(self, LootReserveGlobalSave.Client, "GlobalFavorites");
+    loadInto(self, LootReserveHoUGlobalSave.Client, "Settings");
+    loadInto(self, LootReserveHoUCharacterSave.Client, "CharacterFavorites");
+    loadInto(self, LootReserveHoUGlobalSave.Client, "GlobalFavorites");
 
-    LibStub("LibDBIcon-1.0").RegisterCallback("LootReserve", "LibDBIcon_IconCreated", function(event, button, name)
-        if name == "LootReserve" then
-            button.icon:SetTexture("Interface\\AddOns\\LootReserve\\Assets\\Textures\\Icon");
+    LibStub("LibDBIcon-1.0").RegisterCallback("LootReserveHoU", "LibDBIcon_IconCreated", function(event, button, name)
+        if name == "LootReserveHoU" then
+            button.icon:SetTexture("Interface\\AddOns\\LootReserveHoU\\Assets\\Textures\\Icon");
         end
     end);
-    LibStub("LibDBIcon-1.0"):Register("LootReserve", LibStub("LibDataBroker-1.1"):NewDataObject("LootReserve", {
+    LibStub("LibDBIcon-1.0"):Register("LootReserveHoU", LibStub("LibDataBroker-1.1"):NewDataObject("LootReserveHoU", {
         type = "launcher",
-        text = "LootReserve",
+        text = "LootReserveHoU",
         icon = "Interface\\Buttons\\UI-GroupLoot-Dice-Up",
         OnClick = function(ldb, button)
             if button == "LeftButton" or button == "RightButton" then
-                local window = ((button == "LeftButton") == self.Settings.SwapLDBButtons) and LootReserve.Server.Window or LootReserve.Client.Window;
-                if InCombatLockdown() and window:IsProtected() and window == LootReserve.Server.Window then
-                    LootReserve:ToggleServerWindow(not window:IsShown());
+                local window = ((button == "LeftButton") == self.Settings.SwapLDBButtons) and LootReserveHoU.Server.Window or LootReserveHoU.Client.Window;
+                if InCombatLockdown() and window:IsProtected() and window == LootReserveHoU.Server.Window then
+                    LootReserveHoU:ToggleServerWindow(not window:IsShown());
                 else
                     window:SetShown(not window:IsShown());
                 end
             end
         end,
         OnTooltipShow = function(tooltip)
-            tooltip:SetText("LootReserve", HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1);
+            tooltip:SetText("LootReserveHoU", HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1);
             tooltip:AddLine(format("Left-Click: Open %s Window", self.Settings.SwapLDBButtons and "Host" or "Reserves"));
             tooltip:AddLine(format("Right-Click: Open %s Window", self.Settings.SwapLDBButtons and "Reserves" or "Host"));
         end,
     }), self.Settings.LibDBIcon);
 end
 
-function LootReserve.Client:IsFavorite(itemID)
+function LootReserveHoU.Client:IsFavorite(itemID)
     return self.CharacterFavorites[itemID] or self.GlobalFavorites[itemID];
 end
 
-function LootReserve.Client:SetFavorite(itemID, enabled)
+function LootReserveHoU.Client:SetFavorite(itemID, enabled)
     if self:IsFavorite(itemID) == (enabled and true or false) then return; end
     
-    local item = LootReserve.ItemCache:Item(itemID);
+    local item = LootReserveHoU.ItemCache:Item(itemID);
     if not item or not item:GetInfo() then return; end
     local bindType = item:GetBindType();
 
@@ -120,28 +120,28 @@ function LootReserve.Client:SetFavorite(itemID, enabled)
     self:FlashCategory("Favorites");
 end
 
-function LootReserve.Client:SearchForServer(startup)
+function LootReserveHoU.Client:SearchForServer(startup)
     if not startup and self.ServerSearchTimeoutTime and time() < self.ServerSearchTimeoutTime then return; end
     self.ServerSearchTimeoutTime = time() + 10;
 
-    LootReserve.Comm:BroadcastHello();
+    LootReserveHoU.Comm:BroadcastHello();
 end
 
-function LootReserve.Client:SetMasquerade(player)
+function LootReserveHoU.Client:SetMasquerade(player)
     local oldMasquerade = self.Masquerade;
-    if self.SessionServer and LootReserve:IsMe(self.SessionServer) and LootReserve.Server and LootReserve.Server.CurrentSession then
-        if not player or LootReserve:IsMe(player) then
+    if self.SessionServer and LootReserveHoU:IsMe(self.SessionServer) and LootReserveHoU.Server and LootReserveHoU.Server.CurrentSession then
+        if not player or LootReserveHoU:IsMe(player) then
             self.Masquerade = nil;
         else
             self.Masquerade = player;
         end
         if oldMasquerade ~= self.Masquerade then
-            LootReserve.Comm:SendSessionInfo(LootReserve:Me());
+            LootReserveHoU.Comm:SendSessionInfo(LootReserveHoU:Me());
         end
     end
 end
 
-function LootReserve.Client:StartSession(server, starting, startTime, acceptingReserves, lootCategories, duration, maxDuration, equip, blind, multireserve)
+function LootReserveHoU.Client:StartSession(server, starting, startTime, acceptingReserves, lootCategories, duration, maxDuration, equip, blind, multireserve)
     self:ResetSession(true);
     self.SessionServer = server;
     self.StartTime = startTime;
@@ -155,7 +155,7 @@ function LootReserve.Client:StartSession(server, starting, startTime, acceptingR
 
     if self.MaxDuration ~= 0 and not self.DurationUpdateRegistered then
         self.DurationUpdateRegistered = true;
-        LootReserve:RegisterUpdate(function(elapsed)
+        LootReserveHoU:RegisterUpdate(function(elapsed)
             if self.SessionServer and self.AcceptingReserves and self.Duration ~= 0 then
                 if self.Duration > elapsed then
                     self.Duration = self.Duration - elapsed;
@@ -170,8 +170,8 @@ function LootReserve.Client:StartSession(server, starting, startTime, acceptingR
     if not self.SessionEventsRegistered then
         self.SessionEventsRegistered = true;
 
-        LootReserve:RegisterEvent("GROUP_LEFT", function()
-            if self.SessionServer and not LootReserve:IsMe(self.SessionServer) then
+        LootReserveHoU:RegisterEvent("GROUP_LEFT", function()
+            if self.SessionServer and not LootReserveHoU:IsMe(self.SessionServer) then
                 self:StopSession();
                 self:ResetSession();
                 self:UpdateCategories();
@@ -180,8 +180,8 @@ function LootReserve.Client:StartSession(server, starting, startTime, acceptingR
             end
         end);
 
-        LootReserve:RegisterEvent("GROUP_ROSTER_UPDATE", function()
-            if self.SessionServer and not LootReserve:UnitInGroup(self.SessionServer) then
+        LootReserveHoU:RegisterEvent("GROUP_ROSTER_UPDATE", function()
+            if self.SessionServer and not LootReserveHoU:UnitInGroup(self.SessionServer) then
                 self:StopSession();
                 self:ResetSession();
                 self:UpdateCategories();
@@ -190,7 +190,7 @@ function LootReserve.Client:StartSession(server, starting, startTime, acceptingR
             end
         end);
 
-        LootReserve:RegisterEvent("PLAYER_REGEN_ENABLED", function()
+        LootReserveHoU:RegisterEvent("PLAYER_REGEN_ENABLED", function()
             if self.SessionServer and self.PendingOpen then
                 self.Window:Show();
             end
@@ -198,7 +198,7 @@ function LootReserve.Client:StartSession(server, starting, startTime, acceptingR
         end);
 
         local function OnTooltipSetHyperlink(tooltip)
-            if self.SessionServer and not LootReserve:IsMe(self.SessionServer) then
+            if self.SessionServer and not LootReserveHoU:IsMe(self.SessionServer) then
                 local name, link = tooltip:GetItem();
                 if not link then return; end
                 
@@ -212,10 +212,10 @@ function LootReserve.Client:StartSession(server, starting, startTime, acceptingR
                 if text and string.find(text, " Reserved by ", 1, true) then return; end
                 end
 
-                local itemID = LootReserve.ItemCache:Item(link):GetID();
-                local tokenID = LootReserve.Data:GetToken(itemID);
+                local itemID = LootReserveHoU.ItemCache:Item(link):GetID();
+                local tokenID = LootReserveHoU.Data:GetToken(itemID);
                 if #self:GetItemReservers(tokenID or itemID) > 0 then
-                    local reservesText = LootReserve:FormatReservesTextColored(self:GetItemReservers(tokenID or itemID));
+                    local reservesText = LootReserveHoU:FormatReservesTextColored(self:GetItemReservers(tokenID or itemID));
                     tooltip:AddLine("|TInterface\\BUTTONS\\UI-GroupLoot-Dice-Up:32:32:0:-4|t Reserved by " .. reservesText, 1, 1, 1);
                 end
             end
@@ -230,19 +230,19 @@ function LootReserve.Client:StartSession(server, starting, startTime, acceptingR
 
     if starting then
         self.Masquerade = nil;
-        local lootCategoriesText = LootReserve:GetCategoriesText(self.LootCategories);
-        LootReserve:PrintMessage("Session started%s%s.", lootCategoriesText ~= "" and " for ", lootCategoriesText);
+        local lootCategoriesText = LootReserveHoU:GetCategoriesText(self.LootCategories);
+        LootReserveHoU:PrintMessage("Session started%s%s.", lootCategoriesText ~= "" and " for ", lootCategoriesText);
         if self.AcceptingReserves then
             PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ENTER_WORLD);
         end
     end
 end
 
-function LootReserve.Client:StopSession()
+function LootReserveHoU.Client:StopSession()
     self.AcceptingReserves = false;
 end
 
-function LootReserve.Client:ResetSession(refresh)
+function LootReserveHoU.Client:ResetSession(refresh)
     self.SessionServer     = nil;
     self.RemainingReserves = 0;
     self.MaxReserves       = 0;
@@ -260,93 +260,93 @@ function LootReserve.Client:ResetSession(refresh)
     end
 end
 
-function LootReserve.Client:GetRemainingReserves()
+function LootReserveHoU.Client:GetRemainingReserves()
     return self.SessionServer and self.AcceptingReserves and self.RemainingReserves or 0;
 end
-function LootReserve.Client:HasRemainingReserves()
+function LootReserveHoU.Client:HasRemainingReserves()
     return self:GetRemainingReserves() > 0;
 end
-function LootReserve.Client:GetMaxReserves()
+function LootReserveHoU.Client:GetMaxReserves()
     return self.SessionServer and self.MaxReserves or 0;
 end
 
-function LootReserve.Client:IsItemReserved(itemID)
-    return #self:GetItemReservers(LootReserve.Data:GetToken(itemID) or itemID) > 0;
+function LootReserveHoU.Client:IsItemReserved(itemID)
+    return #self:GetItemReservers(LootReserveHoU.Data:GetToken(itemID) or itemID) > 0;
 end
-function LootReserve.Client:IsItemReservedByMe(itemID, bypassMasquerade)
-    for _, player in ipairs(self:GetItemReservers(LootReserve.Data:GetToken(itemID) or itemID)) do
-        if LootReserve:IsSamePlayer(not bypassMasquerade and LootReserve.Client.Masquerade or LootReserve:Me(), player) then
+function LootReserveHoU.Client:IsItemReservedByMe(itemID, bypassMasquerade)
+    for _, player in ipairs(self:GetItemReservers(LootReserveHoU.Data:GetToken(itemID) or itemID)) do
+        if LootReserveHoU:IsSamePlayer(not bypassMasquerade and LootReserveHoU.Client.Masquerade or LootReserveHoU:Me(), player) then
             return true;
         end
     end
     return false;
 end
-function LootReserve.Client:GetItemReservers(itemID)
+function LootReserveHoU.Client:GetItemReservers(itemID)
     if not self.SessionServer then return { }; end
-    return self.ItemReserves[LootReserve.Data:GetToken(itemID) or itemID] or { };
+    return self.ItemReserves[LootReserveHoU.Data:GetToken(itemID) or itemID] or { };
 end
 
-function LootReserve.Client:IsItemPending(itemID)
+function LootReserveHoU.Client:IsItemPending(itemID)
     return self.PendingItems[itemID];
 end
-function LootReserve.Client:SetItemPending(itemID, pending)
+function LootReserveHoU.Client:SetItemPending(itemID, pending)
     self.PendingItems[itemID] = pending or nil;
 end
 
-function LootReserve.Client:Reserve(itemID)
+function LootReserveHoU.Client:Reserve(itemID)
     if not self.SessionServer then return; end
     if not self.AcceptingReserves then return; end
     
-    local tokenID = LootReserve.Data:GetToken(itemID);
+    local tokenID = LootReserveHoU.Data:GetToken(itemID);
     if tokenID then
-        LootReserve.Client:SetItemPending(tokenID, true);
+        LootReserveHoU.Client:SetItemPending(tokenID, true);
     end
-    LootReserve.Client:SetItemPending(itemID, true);
+    LootReserveHoU.Client:SetItemPending(itemID, true);
     
-    LootReserve.Client:UpdateReserveStatus();
-    LootReserve.Comm:SendReserveItem(tokenID or itemID);
+    LootReserveHoU.Client:UpdateReserveStatus();
+    LootReserveHoU.Comm:SendReserveItem(tokenID or itemID);
 end
 
-function LootReserve.Client:CancelReserve(itemID)
+function LootReserveHoU.Client:CancelReserve(itemID)
     if not self.SessionServer then return; end
     if not self.AcceptingReserves then return; end
     
-    local tokenID = LootReserve.Data:GetToken(itemID);
+    local tokenID = LootReserveHoU.Data:GetToken(itemID);
     if tokenID then
-        LootReserve.Client:SetItemPending(tokenID, true);
+        LootReserveHoU.Client:SetItemPending(tokenID, true);
     end
-    LootReserve.Client:SetItemPending(itemID, true);
+    LootReserveHoU.Client:SetItemPending(itemID, true);
     
-    LootReserve.Client:UpdateReserveStatus();
-    LootReserve.Comm:SendCancelReserve(tokenID or itemID);
+    LootReserveHoU.Client:UpdateReserveStatus();
+    LootReserveHoU.Comm:SendCancelReserve(tokenID or itemID);
 end
 
-function LootReserve.Client:IsOptPending()
+function LootReserveHoU.Client:IsOptPending()
     return self.PendingOpt;
 end
-function LootReserve.Client:SetOptPending(pending)
+function LootReserveHoU.Client:SetOptPending(pending)
     self.PendingOpt = pending or nil;
 end
 
-function LootReserve.Client:IsOptedOut()
+function LootReserveHoU.Client:IsOptedOut()
     return self.OptedOut or false;
 end
-function LootReserve.Client:IsOptedIn()
+function LootReserveHoU.Client:IsOptedIn()
     return not self:IsOptedOut();
 end
 
-function LootReserve.Client:OptOut()
+function LootReserveHoU.Client:OptOut()
     if not self.SessionServer then return; end
     if not self.AcceptingReserves then return; end
     self:SetOptPending(true);
-    LootReserve.Client:UpdateReserveStatus();
-    LootReserve.Comm:SendOptOut();
+    LootReserveHoU.Client:UpdateReserveStatus();
+    LootReserveHoU.Comm:SendOptOut();
 end
 
-function LootReserve.Client:OptIn()
+function LootReserveHoU.Client:OptIn()
     if not self.SessionServer then return; end
     if not self.AcceptingReserves then return; end
     self:SetOptPending(true);
-    LootReserve.Client:UpdateReserveStatus();
-    LootReserve.Comm:SendOptIn();
+    LootReserveHoU.Client:UpdateReserveStatus();
+    LootReserveHoU.Comm:SendOptIn();
 end

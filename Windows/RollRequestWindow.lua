@@ -1,7 +1,7 @@
 local LibCustomGlow = LibStub("LibCustomGlow-1.0");
 
 local function RollRequested(self, sender, item, players, custom, duration, maxDuration, phase, acceptRollsAfterTimerEnded, example)
-    local frame = LootReserveRollRequestWindow;
+    local frame = LootReserveHoURollRequestWindow;
 
     if LibCustomGlow then
         LibCustomGlow.ButtonGlow_Stop(frame.ItemFrame.IconGlow);
@@ -14,13 +14,13 @@ local function RollRequested(self, sender, item, players, custom, duration, maxD
         return;
     end
 
-    local _, myCount = LootReserve:GetReservesData(players, LootReserve:Me());
+    local _, myCount = LootReserveHoU:GetReservesData(players, LootReserveHoU:Me());
     
-    if LootReserve.Client.Settings.RollRequestAutoRollReserved and not custom then
-        LootReserve:PrintMessage("Automatically rolling on reserved item: %s%s", item:GetLink(), (myCount or 1) > 1 and ("x" .. myCount) or "");
-        if not LootReserve.Client.Settings.RollRequestAutoRollNotified then
-            LootReserve:PrintError("Automatic rolling on reserved items can be disabled in Settings.");
-            LootReserve.Client.Settings.RollRequestAutoRollNotified = true;
+    if LootReserveHoU.Client.Settings.RollRequestAutoRollReserved and not custom then
+        LootReserveHoU:PrintMessage("Automatically rolling on reserved item: %s%s", item:GetLink(), (myCount or 1) > 1 and ("x" .. myCount) or "");
+        if not LootReserveHoU.Client.Settings.RollRequestAutoRollNotified then
+            LootReserveHoU:PrintError("Automatic rolling on reserved items can be disabled in Settings.");
+            LootReserveHoU.Client.Settings.RollRequestAutoRollNotified = true;
         end
         for i = 1, myCount or 1 do
             RandomRoll(1, 100);
@@ -30,8 +30,8 @@ local function RollRequested(self, sender, item, players, custom, duration, maxD
     
     if not example then
         if not self.Settings.RollRequestShow then return; end
-        if not LootReserve:Contains(players, LootReserve:Me()) then return; end
-        if custom and not self.Settings.RollRequestShowUnusable and (not LootReserve.ItemConditions:IsItemUsableByMe(item:GetID()) and (not self.Settings.RollRequestShowUnusableBoE or item:GetBindType() == LE_ITEM_BIND_ON_ACQUIRE)) then return; end
+        if not LootReserveHoU:Contains(players, LootReserveHoU:Me()) then return; end
+        if custom and not self.Settings.RollRequestShowUnusable and (not LootReserveHoU.ItemConditions:IsItemUsableByMe(item:GetID()) and (not self.Settings.RollRequestShowUnusableBoE or item:GetBindType() == LE_ITEM_BIND_ON_ACQUIRE)) then return; end
     end
 
     self.RollRequest =
@@ -48,13 +48,13 @@ local function RollRequested(self, sender, item, players, custom, duration, maxD
     };
     local roll = self.RollRequest;
 
-    local description = LootReserve:GetItemDescription(item:GetID(), true);
+    local description = LootReserveHoU:GetItemDescription(item:GetID(), true);
     local name, link, texture = item:GetNameLinkTexture();
 
     frame.Sender = sender;
     frame.Item = item;
     frame.Roll = roll;
-    frame.LabelSender:SetText(format(custom and "%s offers for you to roll%s:" or "%s asks you to roll%s on a reserved item:", LootReserve:ColoredPlayer(sender), phase and format(" for |cFF00FF00%s|r", phase) or ""));
+    frame.LabelSender:SetText(format(custom and "%s offers for you to roll%s:" or "%s asks you to roll%s on a reserved item:", LootReserveHoU:ColoredPlayer(sender), phase and format(" for |cFF00FF00%s|r", phase) or ""));
     frame.ItemFrame.Icon:SetTexture(texture);
     frame.ItemFrame.Name:SetText((link or name or "|cFFFF4000Loading...|r"):gsub("[%[%]]", ""));
     frame.ItemFrame.Misc:SetText(description);
@@ -93,12 +93,12 @@ local function RollRequested(self, sender, item, players, custom, duration, maxD
 
     if not self.RollMatcherRegistered then
         self.RollMatcherRegistered = true;
-        local rollMatcher = LootReserve:FormatToRegexp(RANDOM_ROLL_RESULT);
-        LootReserve:RegisterEvent("CHAT_MSG_SYSTEM", function(text)
+        local rollMatcher = LootReserveHoU:FormatToRegexp(RANDOM_ROLL_RESULT);
+        LootReserveHoU:RegisterEvent("CHAT_MSG_SYSTEM", function(text)
             if self.RollRequest and frame:IsShown() then
                 local player, roll, min, max = text:match(rollMatcher);
-                player = player and LootReserve:Player(player);
-                if player and LootReserve:IsMe(player) and roll and min == "1" and max == "100" and tonumber(roll) then
+                player = player and LootReserveHoU:Player(player);
+                if player and LootReserveHoU:IsMe(player) and roll and min == "1" and max == "100" and tonumber(roll) then
                     if self.RollRequest.Count > 1 then
                         self.RollRequest.Count = self.RollRequest.Count - 1;
                         local myCount = self.RollRequest.Count;
@@ -115,22 +115,22 @@ local function RollRequested(self, sender, item, players, custom, duration, maxD
     end
 end
 
-function LootReserve.Client:RollRequested(sender, item, ...)
+function LootReserveHoU.Client:RollRequested(sender, item, ...)
     local args = {...};
     if item:GetID() == 0 then
-        RollRequested(LootReserve.Client, sender, item, ...);
+        RollRequested(LootReserveHoU.Client, sender, item, ...);
     else
         item:OnCache(function()
-            return RollRequested(LootReserve.Client, sender, item, unpack(args))
+            return RollRequested(LootReserveHoU.Client, sender, item, unpack(args))
         end);
     end
 end
 
-function LootReserve.Client:RespondToRollRequest(response)
+function LootReserveHoU.Client:RespondToRollRequest(response)
     if LibCustomGlow then
-        LibCustomGlow.ButtonGlow_Stop(LootReserveRollRequestWindow.ItemFrame.IconGlow);
+        LibCustomGlow.ButtonGlow_Stop(LootReserveHoURollRequestWindow.ItemFrame.IconGlow);
     end
-    LootReserveRollRequestWindow:Hide();
+    LootReserveHoURollRequestWindow:Hide();
 
     if not self.RollRequest then return; end
 
@@ -140,7 +140,7 @@ function LootReserve.Client:RespondToRollRequest(response)
                 RandomRoll(1, 100);
             end
         else
-            LootReserve.Comm:SendPassRoll(self.RollRequest.Item);
+            LootReserveHoU.Comm:SendPassRoll(self.RollRequest.Item);
         end
     end
     self.RollRequest = nil;

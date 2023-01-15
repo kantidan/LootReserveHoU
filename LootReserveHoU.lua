@@ -1,20 +1,20 @@
 ﻿local addon, ns = ...;
 
-LootReserve = LibStub("AceAddon-3.0"):NewAddon("LootReserve", "AceComm-3.0");
-LootReserve.Version = GetAddOnMetadata(addon, "Version");
-LootReserve.MinAllowedVersion = GetAddOnMetadata(addon, "X-Min-Allowed-Version");
-LootReserve.LatestKnownVersion = LootReserve.Version;
-LootReserve.Enabled = true;
+LootReserveHoU = LibStub("AceAddon-3.0"):NewAddon("LootReserveHoU", "AceComm-3.0");
+LootReserveHoU.Version = GetAddOnMetadata(addon, "Version");
+LootReserveHoU.MinAllowedVersion = GetAddOnMetadata(addon, "X-Min-Allowed-Version");
+LootReserveHoU.LatestKnownVersion = LootReserveHoU.Version;
+LootReserveHoU.Enabled = true;
 
-LootReserve.EventFrame = CreateFrame("Frame", nil, UIParent);
-LootReserve.EventFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0);
-LootReserve.EventFrame:SetSize(0, 0);
-LootReserve.EventFrame:Show();
+LootReserveHoU.EventFrame = CreateFrame("Frame", nil, UIParent);
+LootReserveHoU.EventFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0);
+LootReserveHoU.EventFrame:SetSize(0, 0);
+LootReserveHoU.EventFrame:Show();
 
-LootReserve.LibRangeCheck = LibStub("LibRangeCheck-2.0");
-LootReserve.ItemCache     = LibStub("ItemCache");
+LootReserveHoU.LibRangeCheck = LibStub("LibRangeCheck-2.0");
+LootReserveHoU.ItemCache     = LibStub("ItemCache");
 
-LootReserveCharacterSave =
+LootReserveHoUCharacterSave =
 {
     Client =
     {
@@ -28,7 +28,7 @@ LootReserveCharacterSave =
         RecentLoot     = nil,
     },
 };
-LootReserveGlobalSave =
+LootReserveHoUGlobalSave =
 {
     Client =
     {
@@ -43,9 +43,9 @@ LootReserveGlobalSave =
     },
 };
 
-LootReserve.BagCache = nil;
+LootReserveHoU.BagCache = nil;
 
-StaticPopupDialogs["LOOTRESERVE_GENERIC_ERROR"] =
+StaticPopupDialogs["LootReserveHoU_GENERIC_ERROR"] =
 {
     text         = "%s",
     button1      = CLOSE,
@@ -54,7 +54,7 @@ StaticPopupDialogs["LOOTRESERVE_GENERIC_ERROR"] =
     hideOnEscape = 1,
 };
 
-LOOTRESERVE_BACKDROP_BLACK_4 =
+LootReserveHoU_BACKDROP_BLACK_4 =
 {
     bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background",
     edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
@@ -62,25 +62,25 @@ LOOTRESERVE_BACKDROP_BLACK_4 =
     insets   = { left = 4, right = 4, top = 4, bottom = 4 },
 };
 
-SLASH_LOOTRESERVE1 = "/lootreserve";
-SLASH_LOOTRESERVE2 = "/reserve";
-SLASH_LOOTRESERVE3 = "/res";
-function SlashCmdList.LOOTRESERVE(command)
+SLASH_LootReserveHoU1 = "/LootReserveHoU";
+SLASH_LootReserveHoU2 = "/reserveHoU";
+SLASH_LootReserveHoU3 = "/resHoU";
+function SlashCmdList.LootReserveHoU(command)
     command = command:lower();
 
     if command == "" then
-        LootReserve.Client.Window:SetShown(not LootReserve.Client.Window:IsShown());
+        LootReserveHoU.Client.Window:SetShown(not LootReserveHoU.Client.Window:IsShown());
     elseif command == "server" or command == "host" then
-        LootReserve:ToggleServerWindow(not LootReserve.Server.Window:IsShown());
+        LootReserveHoU:ToggleServerWindow(not LootReserveHoU.Server.Window:IsShown());
     elseif command == "roll" or command == "rolls" then
-        LootReserve:ToggleServerWindow(not LootReserve.Server.Window:IsShown(), true);
+        LootReserveHoU:ToggleServerWindow(not LootReserveHoU.Server.Window:IsShown(), true);
     end
 end
 
 local pendingToggleServerWindow = nil;
 local pendingLockdownHooked = nil;
-function LootReserve:ToggleServerWindow(state, rolls)
-    if InCombatLockdown() and LootReserve.Server.Window:IsProtected() then
+function LootReserveHoU:ToggleServerWindow(state, rolls)
+    if InCombatLockdown() and LootReserveHoU.Server.Window:IsProtected() then
         pendingToggleServerWindow = { state, rolls };
         if not pendingLockdownHooked then
             pendingLockdownHooked = true;
@@ -104,25 +104,25 @@ function LootReserve:ToggleServerWindow(state, rolls)
     end
 end
 
-function LootReserve:OnInitialize()
+function LootReserveHoU:OnInitialize()
 end
 
-function LootReserve:OnEnable()
-    LootReserve.Client:Load();
-    LootReserve.Server:Load();
-    if LootReserve.Client.Settings.AllowPreCache then
-        LootReserve.ItemSearch:Load();
+function LootReserveHoU:OnEnable()
+    LootReserveHoU.Client:Load();
+    LootReserveHoU.Server:Load();
+    if LootReserveHoU.Client.Settings.AllowPreCache then
+        LootReserveHoU.ItemSearch:Load();
     end
     
-    LootReserve.Comm:StartListening();
+    LootReserveHoU.Comm:StartListening();
 
     local function Startup()
-        LootReserve.Server:Startup();
+        LootReserveHoU.Server:Startup();
         -- Query other group members about their addon versions and request server session info if any
-        LootReserve.Client:SearchForServer(true);
+        LootReserveHoU.Client:SearchForServer(true);
     end
 
-    LootReserve:RegisterEvent("GROUP_JOINED", function()
+    LootReserveHoU:RegisterEvent("GROUP_JOINED", function()
         -- Load client and server after WoW client restart
         -- Server session should not normally exist when the player is outside of any raid groups, so restarting it upon regular group join shouldn't break anything
         -- With a delay, due to possible name cache issues
@@ -134,43 +134,43 @@ function LootReserve:OnEnable()
     Startup();
 end
 
-function LootReserve:OnDisable()
+function LootReserveHoU:OnDisable()
 end
 
-function LootReserve:ShowError(fmt, ...)
-    StaticPopup_Show("LOOTRESERVE_GENERIC_ERROR", "|cFFFFD200LootReserve|r|n|n" .. format(fmt, ...) .. "|n ");
+function LootReserveHoU:ShowError(fmt, ...)
+    StaticPopup_Show("LootReserveHoU_GENERIC_ERROR", "|cFFFFD200LootReserveHoU|r|n|n" .. format(fmt, ...) .. "|n ");
 end
 
-function LootReserve:PrintError(fmt, ...)
-    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFD200LootReserve: |r" .. format(fmt, ...), 1, 0, 0);
+function LootReserveHoU:PrintError(fmt, ...)
+    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFD200LootReserveHoU: |r" .. format(fmt, ...), 1, 0, 0);
 end
 
-function LootReserve:PrintMessage(fmt, ...)
-    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFD200LootReserve: |r" .. format(fmt, ...), 1, 1, 1);
+function LootReserveHoU:PrintMessage(fmt, ...)
+    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFD200LootReserveHoU: |r" .. format(fmt, ...), 1, 1, 1);
 end
 
-function LootReserve:debug(...)
+function LootReserveHoU:debug(...)
     --@debug@
     print("[DEBUG] ", ...);
     --@end-debug@
 end
 
-function LootReserve:debugFunc(func)
+function LootReserveHoU:debugFunc(func)
     --@debug@
     func();
     --@end-debug@
 end
 
-function LootReserve:RegisterUpdate(handler)
-    LootReserve.EventFrame:HookScript("OnUpdate", function(self, elapsed)
+function LootReserveHoU:RegisterUpdate(handler)
+    LootReserveHoU.EventFrame:HookScript("OnUpdate", function(self, elapsed)
         handler(elapsed);
     end);
 end
 
-function LootReserve:RegisterEvent(...)
-    if not LootReserve.EventFrame.RegisteredEvents then
-        LootReserve.EventFrame.RegisteredEvents = { };
-        LootReserve.EventFrame:SetScript("OnEvent", function(self, event, ...)
+function LootReserveHoU:RegisterEvent(...)
+    if not LootReserveHoU.EventFrame.RegisteredEvents then
+        LootReserveHoU.EventFrame.RegisteredEvents = { };
+        LootReserveHoU.EventFrame:SetScript("OnEvent", function(self, event, ...)
             local handlers = self.RegisteredEvents[event];
             if handlers then
                 for _, handler in ipairs(handlers) do
@@ -184,23 +184,23 @@ function LootReserve:RegisterEvent(...)
 
     local handler = select(params, ...);
     if type(handler) ~= "function" then
-        error("LootReserve:RegisterEvent: The last passed parameter must be the handler function");
+        error("LootReserveHoU:RegisterEvent: The last passed parameter must be the handler function");
         return;
     end
 
     for i = 1, params - 1 do
         local event = select(i, ...);
         if type(event) == "string" then
-            LootReserve.EventFrame:RegisterEvent(event);
-            LootReserve.EventFrame.RegisteredEvents[event] = LootReserve.EventFrame.RegisteredEvents[event] or { };
-            table.insert(LootReserve.EventFrame.RegisteredEvents[event], handler);
+            LootReserveHoU.EventFrame:RegisterEvent(event);
+            LootReserveHoU.EventFrame.RegisteredEvents[event] = LootReserveHoU.EventFrame.RegisteredEvents[event] or { };
+            table.insert(LootReserveHoU.EventFrame.RegisteredEvents[event], handler);
         else
-            error("LootReserve:RegisterEvent: All but the last passed parameters must be event names");
+            error("LootReserveHoU:RegisterEvent: All but the last passed parameters must be event names");
         end
     end
 end
 
-function LootReserve:OpenMenu(menu, menuContainer, anchor)
+function LootReserveHoU:OpenMenu(menu, menuContainer, anchor)
     if UIDROPDOWNMENU_OPEN_MENU == menuContainer then
         CloseMenus();
         return;
@@ -235,7 +235,7 @@ function LootReserve:OpenMenu(menu, menuContainer, anchor)
     EasyMenu(menu, menuContainer, anchor, 0, 0, "MENU");
 end
 
-function LootReserve:OpenSubMenu(...)
+function LootReserveHoU:OpenSubMenu(...)
     for submenu = 1, select("#", ...) do
         local arg1 = select(submenu, ...);
         local opened = false;
@@ -257,31 +257,31 @@ function LootReserve:OpenSubMenu(...)
     return true;
 end
 
-function LootReserve:ReopenMenu(button, ...)
+function LootReserveHoU:ReopenMenu(button, ...)
     CloseMenus();
     button:Click();
     self:OpenSubMenu(...);
 end
 
-function LootReserve:Round(num, nearest)
+function LootReserveHoU:Round(num, nearest)
     nearest = nearest or 1;
     local lower = math.floor(num / nearest) * nearest;
     local upper = lower + nearest;
     return (upper - num < num - lower) and upper or lower;
 end
 
--- Used to prevent LootReserve:SendChatMessage from breaking a hyperlink into multiple segments if the message is too long
+-- Used to prevent LootReserveHoU:SendChatMessage from breaking a hyperlink into multiple segments if the message is too long
 -- Use it if a text of undetermined length preceeds the hyperlink
--- GOOD: format("%s win %s", strjoin(", ", players), LootReserve:FixLink(link)) - players might contain so many names that the message overflows 255 chars limit
---  BAD: format("%s won by %s", LootReserve:FixLink(link), strjoin(", ", players)) - link is always early in the message and will never overflow the 255 chars limit
-function LootReserve:FixLink(link)
+-- GOOD: format("%s win %s", strjoin(", ", players), LootReserveHoU:FixLink(link)) - players might contain so many names that the message overflows 255 chars limit
+--  BAD: format("%s won by %s", LootReserveHoU:FixLink(link), strjoin(", ", players)) - link is always early in the message and will never overflow the 255 chars limit
+function LootReserveHoU:FixLink(link)
     return link:gsub(" ", "\1");
 end
-function LootReserve:FixText(text)
+function LootReserveHoU:FixText(text)
     return text:gsub("\1", " ");
 end
 
-function LootReserve:SendChatMessage(text, channel, target)
+function LootReserveHoU:SendChatMessage(text, channel, target)
     if channel == "RAID_WARNING" and not (UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) then
         channel = "RAID";
     end
@@ -289,9 +289,9 @@ function LootReserve:SendChatMessage(text, channel, target)
         channel = "PARTY";
     end
     if channel == "PARTY" and not IsInGroup() then
-        channel, target = "WHISPER", LootReserve:Me();
+        channel, target = "WHISPER", LootReserveHoU:Me();
     end
-    if target and not LootReserve:IsPlayerOnline(target) then return; end
+    if target and not LootReserveHoU:IsPlayerOnline(target) then return; end
     local function Send(text)
         if #text > 0 then
             text = self:FixText(text);
@@ -323,13 +323,13 @@ function LootReserve:SendChatMessage(text, channel, target)
     end
 end
 
-function LootReserve:GetCurrentExpansion()
+function LootReserveHoU:GetCurrentExpansion()
     local version = GetBuildInfo();
     local expansion, major, minor = strsplit(".", version);
     return tonumber(expansion) - 1;
 end
 
-function LootReserve:IsCrossRealm()
+function LootReserveHoU:IsCrossRealm()
     return self:GetCurrentExpansion() == 0 and not C_Seasons.HasActiveSeason();
     -- This doesn't really work, because even in non-connected realms UnitFullName ends up returning your realm name,
     -- and we can't use UnitName either, because that one NEVER returns a realm for "player". WTB good API, 5g.
@@ -344,18 +344,18 @@ function LootReserve:IsCrossRealm()
     ]]
 end
 
-function LootReserve:GetNumClasses()
+function LootReserveHoU:GetNumClasses()
     return 11;
 end
 
-function LootReserve:GetClassInfo(classID)
+function LootReserveHoU:GetClassInfo(classID)
     local info = C_CreatureInfo.GetClassInfo(classID);
     if info then
         return info.className, info.classFile, info.classID;
     end
 end
 
-function LootReserve:Player(player)
+function LootReserveHoU:Player(player)
     if not self:IsCrossRealm() then
         return Ambiguate(player, "short");
     end
@@ -378,19 +378,19 @@ function LootReserve:Player(player)
     return name .. "-" .. realm;
 end
 
-function LootReserve:Me()
+function LootReserveHoU:Me()
     return self:Player(UnitName("player"));
 end
 
-function LootReserve:IsMe(player)
+function LootReserveHoU:IsMe(player)
     return self:IsSamePlayer(player, self:Me());
 end
 
-function LootReserve:IsSamePlayer(a, b)
+function LootReserveHoU:IsSamePlayer(a, b)
     return self:Player(a) == self:Player(b);
 end
 
-function LootReserve:IsPlayerOnline(player)
+function LootReserveHoU:IsPlayerOnline(player)
     return self:ForEachRaider(function(name, _, _, _, _, _, _, online)
         if self:IsSamePlayer(name, player) then
             return online or false;
@@ -398,38 +398,38 @@ function LootReserve:IsPlayerOnline(player)
     end);
 end
 
-local function LootReserve_UnitInRaid(player)
-    if not LootReserve:IsCrossRealm() then
+local function LootReserveHoU_UnitInRaid(player)
+    if not LootReserveHoU:IsCrossRealm() then
         return UnitInRaid(player);
     end
 
-    return IsInRaid() and LootReserve:ForEachRaider(function(name, _, _, _, className, classFilename, _, online)
-        if LootReserve:IsSamePlayer(name, player) then
+    return IsInRaid() and LootReserveHoU:ForEachRaider(function(name, _, _, _, className, classFilename, _, online)
+        if LootReserveHoU:IsSamePlayer(name, player) then
             return true;
         end
     end);
 end
 
-local function LootReserve_UnitInParty(player)
-    if not LootReserve:IsCrossRealm() then
+local function LootReserveHoU_UnitInParty(player)
+    if not LootReserveHoU:IsCrossRealm() then
         return UnitInParty(player);
     end
 
-    return IsInGroup() and not IsInRaid() and LootReserve:ForEachRaider(function(name, _, _, _, className, classFilename, _, online)
-        if LootReserve:IsSamePlayer(name, player) then
+    return IsInGroup() and not IsInRaid() and LootReserveHoU:ForEachRaider(function(name, _, _, _, className, classFilename, _, online)
+        if LootReserveHoU:IsSamePlayer(name, player) then
             return true;
         end
     end);
 end
 
-function LootReserve:UnitInGroup(player)
+function LootReserveHoU:UnitInGroup(player)
     if not self:IsCrossRealm() then
         if IsInRaid() then
-            return LootReserve_UnitInRaid(player) and true;
+            return LootReserveHoU_UnitInRaid(player) and true;
         elseif IsInGroup() then
-            return LootReserve_UnitInParty(player);
+            return LootReserveHoU_UnitInParty(player);
         else
-            return LootReserve:IsMe(player);
+            return LootReserveHoU:IsMe(player);
         end
     end
 
@@ -440,14 +440,14 @@ function LootReserve:UnitInGroup(player)
     end);
 end
 
-function LootReserve:UnitClass(player)
+function LootReserveHoU:UnitClass(player)
     if not self:IsCrossRealm() then
         local className, classFilename, classId = UnitClass(player);
         if not className then
-            if LootReserve.Server.CurrentSession and LootReserve.Server.CurrentSession.Members[player] and LootReserve.Server.CurrentSession.Members[player].Class then
-                return LootReserve:GetClassInfo(LootReserve.Server.CurrentSession.Members[player].Class);
-            elseif LootReserve.Server.NewSessionSettings and LootReserve.Server.NewSessionSettings.ImportedMembers and LootReserve.Server.NewSessionSettings.ImportedMembers[player] and LootReserve.Server.NewSessionSettings.ImportedMembers[player].Class then
-                return LootReserve:GetClassInfo(LootReserve.Server.NewSessionSettings.ImportedMembers[player].Class);
+            if LootReserveHoU.Server.CurrentSession and LootReserveHoU.Server.CurrentSession.Members[player] and LootReserveHoU.Server.CurrentSession.Members[player].Class then
+                return LootReserveHoU:GetClassInfo(LootReserveHoU.Server.CurrentSession.Members[player].Class);
+            elseif LootReserveHoU.Server.NewSessionSettings and LootReserveHoU.Server.NewSessionSettings.ImportedMembers and LootReserveHoU.Server.NewSessionSettings.ImportedMembers[player] and LootReserveHoU.Server.NewSessionSettings.ImportedMembers[player].Class then
+                return LootReserveHoU:GetClassInfo(LootReserveHoU.Server.NewSessionSettings.ImportedMembers[player].Class);
             end
         end
         return className, classFilename, classId;
@@ -455,12 +455,12 @@ function LootReserve:UnitClass(player)
 
     return self:ForEachRaider(function(name, _, _, _, className, classFilename)
         if self:IsSamePlayer(name, player) then
-            return className, classFilename, LootReserve.Constants.ClassFilenameToClassID[classFilename];
+            return className, classFilename, LootReserveHoU.Constants.ClassFilenameToClassID[classFilename];
         end
     end);
 end
 
-function LootReserve:UnitRace(player)
+function LootReserveHoU:UnitRace(player)
     if not self:IsCrossRealm() then
         return UnitRace(player);
     end
@@ -475,7 +475,7 @@ function LootReserve:UnitRace(player)
     end);
 end
 
-function LootReserve:UnitSex(player)
+function LootReserveHoU:UnitSex(player)
     if not self:IsCrossRealm() then
         return UnitSex(player);
     end
@@ -491,9 +491,9 @@ function LootReserve:UnitSex(player)
 end
 
 local function GetPlayerClassColor(player, dim, class)
-    local className, classFilename, classId = LootReserve:UnitClass(player);
+    local className, classFilename, classId = LootReserveHoU:UnitClass(player);
     if class then
-        className, classFilename, classId = LootReserve:GetClassInfo(class);
+        className, classFilename, classId = LootReserveHoU:GetClassInfo(class);
     end
     if classFilename then
         local colors = RAID_CLASS_COLORS[classFilename];
@@ -512,12 +512,12 @@ end
 local function GetRaidUnitID(player)
     for i = 1, MAX_RAID_MEMBERS do
         local unit = UnitName("raid" .. i);
-        if unit and LootReserve:IsSamePlayer(LootReserve:Player(unit), player) then
+        if unit and LootReserveHoU:IsSamePlayer(LootReserveHoU:Player(unit), player) then
             return "raid" .. i;
         end
     end
 
-    if LootReserve:IsMe(player) then
+    if LootReserveHoU:IsMe(player) then
         return "player";
     end
 end
@@ -525,17 +525,17 @@ end
 local function GetPartyUnitID(player)
     for i = 1, MAX_PARTY_MEMBERS do
         local unit = UnitName("party" .. i);
-        if unit and LootReserve:IsSamePlayer(LootReserve:Player(unit), player) then
+        if unit and LootReserveHoU:IsSamePlayer(LootReserveHoU:Player(unit), player) then
             return "party" .. i;
         end
     end
 
-    if LootReserve:IsMe(player) then
+    if LootReserveHoU:IsMe(player) then
         return "player";
     end
 end
 
-function LootReserve:GetGroupUnitID(player)
+function LootReserveHoU:GetGroupUnitID(player)
     if IsInRaid() then
         return GetRaidUnitID(player);
     elseif IsInGroup() then
@@ -545,13 +545,13 @@ function LootReserve:GetGroupUnitID(player)
     end
 end
 
-function LootReserve:ColoredPlayer(player, class)
+function LootReserveHoU:ColoredPlayer(player, class)
     local name, realm = strsplit("-", player);
     return realm and format("|c%s%s|r|c%s-%s|r", GetPlayerClassColor(player, false, class), name, GetPlayerClassColor(player, true, class), realm)
                   or format("|c%s%s|r",          GetPlayerClassColor(player, false, class), player);
 end
 
-function LootReserve:ForEachRaider(func)
+function LootReserveHoU:ForEachRaider(func)
     if not IsInGroup() then
         local className, classFilename = UnitClass("player");
         local raceName,  raceFilename  = UnitRace("player");
@@ -620,7 +620,7 @@ for replacement, pattern in pairs(charSimplifications) do
     end
 end
 
-function LootReserve:NormalizeName(name)
+function LootReserveHoU:NormalizeName(name)
     for i = 1, name:utf8len() do
         if name:utf8sub(i, i) == "-" then
             return name:utf8sub(1, 1):utf8upper() .. name:utf8sub(2, i - 1):utf8lower() .. name:utf8sub(i);
@@ -639,22 +639,22 @@ local function SimplifyName(self, name)
     return self:NormalizeName(name:utf8replace(simplificationMapping));
 end
 
-function LootReserve:SimplifyName(name)
+function LootReserveHoU:SimplifyName(name)
     if not simplifiedNamesMemo[name] then
         simplifiedNamesMemo[name] = SimplifyName(self, name);
     end
     return simplifiedNamesMemo[name];
 end
 
-function LootReserve:GetNumGroupMembers(func)
+function LootReserveHoU:GetNumGroupMembers(func)
     local count = 0;
     self:ForEachRaider(function() count = count + 1; end);
     return count;
 end
 
-function LootReserve:IsTradeableItem(bag, slot)
+function LootReserveHoU:IsTradeableItem(bag, slot)
     -- can't use C_Item.IsBound because it sometimes bugs and gives a usage error despite correctly receiving an ItemLocation
-    return not LootReserve:IsItemSoulbound(bag, slot) or LootReserve:IsItemSoulboundTradeable(bag, slot);
+    return not LootReserveHoU:IsItemSoulbound(bag, slot) or LootReserveHoU:IsItemSoulboundTradeable(bag, slot);
 end
 
 local function CacheBagSlot(self, bag, slot, i)
@@ -673,7 +673,7 @@ local function CheckBagCache(self)
     if not bagCacheHooked then
         bagCacheHooked = true;
         self:RegisterEvent("BAG_UPDATE_DELAYED", function()
-            LootReserve:WipeBagCache();
+            LootReserveHoU:WipeBagCache();
         end);
         self:RegisterEvent("ITEM_LOCK_CHANGED", function(bag, slot)
             if not slot then return; end
@@ -705,11 +705,11 @@ local function match(item, itemOrID)
     end
 end
 
-function LootReserve:WipeBagCache()
+function LootReserveHoU:WipeBagCache()
     self.BagCache = nil;
 end
 
-function LootReserve:GetTradeableItemCount(itemOrID, includeLoot)
+function LootReserveHoU:GetTradeableItemCount(itemOrID, includeLoot)
     CheckBagCache(self);
     local count, _ = 0;
     if includeLoot then
@@ -733,7 +733,7 @@ function LootReserve:GetTradeableItemCount(itemOrID, includeLoot)
     return count;
 end
     
-function LootReserve:GetBagSlot(itemOrID, permitLocked, skipCount)
+function LootReserveHoU:GetBagSlot(itemOrID, permitLocked, skipCount)
     CheckBagCache(self);
     skipCount = skipCount or 0;
     for _, slotData in ipairs(self.BagCache) do
@@ -747,15 +747,15 @@ function LootReserve:GetBagSlot(itemOrID, permitLocked, skipCount)
     return nil;
 end
 
-function LootReserve:IsItemSoulbound(bag, slot)
+function LootReserveHoU:IsItemSoulbound(bag, slot)
     if not self.TooltipScanner then
-        self.TooltipScanner = CreateFrame("GameTooltip", "LootReserveTooltipScanner", UIParent, "GameTooltipTemplate");
+        self.TooltipScanner = CreateFrame("GameTooltip", "LootReserveHoUTooltipScanner", UIParent, "GameTooltipTemplate");
         self.TooltipScanner:Hide();
     end
 
     self.TooltipScanner:SetOwner(UIParent, "ANCHOR_NONE");
     self.TooltipScanner:SetBagItem(bag, slot);
-    for i = LootReserve.TooltipScanner:NumLines(), 1, -1 do
+    for i = LootReserveHoU.TooltipScanner:NumLines(), 1, -1 do
         local line = _G[self.TooltipScanner:GetName() .. "TextLeft" .. i];
         if line and line:GetText() and line:GetText() == ITEM_SOULBOUND then
             self.TooltipScanner:Hide();
@@ -766,9 +766,9 @@ function LootReserve:IsItemSoulbound(bag, slot)
     return false;
 end
 
-function LootReserve:IsItemSoulboundTradeable(bag, slot)
+function LootReserveHoU:IsItemSoulboundTradeable(bag, slot)
     if not self.TooltipScanner then
-        self.TooltipScanner = CreateFrame("GameTooltip", "LootReserveTooltipScanner", UIParent, "GameTooltipTemplate");
+        self.TooltipScanner = CreateFrame("GameTooltip", "LootReserveHoUTooltipScanner", UIParent, "GameTooltipTemplate");
         self.TooltipScanner:Hide();
     end
 
@@ -778,7 +778,7 @@ function LootReserve:IsItemSoulboundTradeable(bag, slot)
 
     self.TooltipScanner:SetOwner(UIParent, "ANCHOR_NONE");
     self.TooltipScanner:SetBagItem(bag, slot);
-    for i = LootReserve.TooltipScanner:NumLines(), 1, -1 do
+    for i = LootReserveHoU.TooltipScanner:NumLines(), 1, -1 do
         local line = _G[self.TooltipScanner:GetName() .. "TextLeft" .. i];
         if line and line:GetText() and line:GetText():match(self.TooltipScanner.SoulboundTradeable) then
             self.TooltipScanner:Hide();
@@ -789,11 +789,11 @@ function LootReserve:IsItemSoulboundTradeable(bag, slot)
     return false;
 end
 
-function LootReserve:IsItemBeingTraded(item)
+function LootReserveHoU:IsItemBeingTraded(item)
     for i = 1, 6 do
         local link = GetTradePlayerItemLink(i);
         if link then
-            local tradeItem = LootReserve.ItemCache:Item(link);
+            local tradeItem = LootReserveHoU.ItemCache:Item(link);
             if tradeItem == item then
                 return true;
             end
@@ -802,7 +802,7 @@ function LootReserve:IsItemBeingTraded(item)
     return false;
 end
 
-function LootReserve:PutItemInTrade(bag, slot)
+function LootReserveHoU:PutItemInTrade(bag, slot)
     for i = 1, 6 do
         if not GetTradePlayerItemInfo(i) then
             PickupContainerItem(bag, slot);
@@ -813,17 +813,17 @@ function LootReserve:PutItemInTrade(bag, slot)
     return false;
 end
 
-function LootReserve:GetItemDescription(itemID, noTokenRedirect)
-    local item = LootReserve.ItemCache:Item(itemID);
+function LootReserveHoU:GetItemDescription(itemID, noTokenRedirect)
+    local item = LootReserveHoU.ItemCache:Item(itemID);
     if not item:Cache():IsCached() then return; end
     local name, _, _, _, _, itemType, itemSubType, _, equipLoc, _, _, _, _, bindType = item:GetInfo();
     local skillRequired, skillLevelRequired = item:GetSkillRequired();
     local itemText = "";
     
     if not noTokenRedirect then
-        local tokenID = LootReserve.Data:GetToken(itemID);
+        local tokenID = LootReserveHoU.Data:GetToken(itemID);
         if tokenID then
-            local token = LootReserve.ItemCache:Item(tokenID);
+            local token = LootReserveHoU.ItemCache:Item(tokenID);
             if not token:Cache():IsCached() then return; end
             return "From: " .. token:GetName();
         end
@@ -837,8 +837,8 @@ function LootReserve:GetItemDescription(itemID, noTokenRedirect)
         itemText = itemText .. skillLevelRequired .. " " .. skillRequired .. " "
     end
     
-    if LootReserve.Constants.RedundantSubTypes[itemSubType] then
-        itemText = LootReserve.Constants.RedundantSubTypes[itemSubType];
+    if LootReserveHoU.Constants.RedundantSubTypes[itemSubType] then
+        itemText = LootReserveHoU.Constants.RedundantSubTypes[itemSubType];
     elseif itemType == ARMOR then
         if itemSubType == MISCELLANEOUS or equipLoc == "INVTYPE_CLOAK" then
             itemText = itemText .. (_G[equipLoc] or "");
@@ -846,7 +846,7 @@ function LootReserve:GetItemDescription(itemID, noTokenRedirect)
             itemText = itemText .. itemSubType .. " " .. (_G[equipLoc] or "");
         end
     elseif itemType == WEAPON then
-        itemText = itemText .. (_G[equipLoc] and (_G[equipLoc] .. " ") or "") .. (LootReserve.Constants.WeaponTypeNames[itemSubType] or "");
+        itemText = itemText .. (_G[equipLoc] and (_G[equipLoc] .. " ") or "") .. (LootReserveHoU.Constants.WeaponTypeNames[itemSubType] or "");
     elseif itemType == "Recipe" then
         if itemSubType == "Book" then
             itemText = itemText .. "Skill Book";
@@ -882,14 +882,14 @@ function LootReserve:GetItemDescription(itemID, noTokenRedirect)
     return itemText;
 end
 
-function LootReserve:IsLootingItem(itemOrID)
-    local item = LootReserve.ItemCache:Item(itemOrID);
+function LootReserveHoU:IsLootingItem(itemOrID)
+    local item = LootReserveHoU.ItemCache:Item(itemOrID);
     local firstIndex;
     local count = 0;
     for i = 1, GetNumLootItems() do
         local itemLink = GetLootSlotLink(i);
         if itemLink and itemLink:find"item:%d" then -- GetLootSlotLink() sometimes returns "|Hitem:::::::::70:::::::::[]"
-            local lootItem = LootReserve.ItemCache:Item(itemLink);
+            local lootItem = LootReserveHoU.ItemCache:Item(itemLink);
             if lootItem and lootItem:GetID() == item:GetID() then
                 firstIndex = firstIndex or i;
                 count = count + 1;
@@ -899,15 +899,15 @@ function LootReserve:IsLootingItem(itemOrID)
     return firstIndex, count;
 end
 
-function LootReserve:CanLocate()
+function LootReserveHoU:CanLocate()
     return not not UnitPosition("player");
 end
 
-function LootReserve:CanUseDBMLocator(unitID)
+function LootReserveHoU:CanUseDBMLocator(unitID)
     return DBM and DBM.ReleaseRevision > 20220618000000 and self:CanLocate() and UnitIsVisible(unitID) and true or false;
 end
 
-function LootReserve:GetContinent(unitID)
+function LootReserveHoU:GetContinent(unitID)
     local mapID = C_Map.GetBestMapForUnit(unitID)
     if not mapID then return; end
     
@@ -920,7 +920,7 @@ function LootReserve:GetContinent(unitID)
     return continent, worldPos;
 end
 
-function LootReserve:GetRange(unitID, playerPos, targetPos)
+function LootReserveHoU:GetRange(unitID, playerPos, targetPos)
     if not playerPos or not targetPos then
         local min, max = self.LibRangeCheck:getRange(unitID);
         if not min then
@@ -940,7 +940,7 @@ function LootReserve:GetRange(unitID, playerPos, targetPos)
     return dist, nil, angle, format("%s%.0f|r yd%s |TInterface\\Common\\Spacer:16|t", self:GetRangeColor(dist), dist, dist == 1 and "" or "s");
 end
 
-function LootReserve:GetRangeColor(range)
+function LootReserveHoU:GetRangeColor(range)
     if range < 15 then
         return "|cff00ff00"; -- green
     elseif range < 25 then
@@ -952,7 +952,7 @@ function LootReserve:GetRangeColor(range)
     end
 end
 
-function LootReserve:TransformSearchText(text)
+function LootReserveHoU:TransformSearchText(text)
     text = self:StringTrim(text, "[%s%[%]]");
     text = text:upper();
     text = text:gsub("`", "'"):gsub("´", "'"); -- For whatever reason [`´] doesn't work
@@ -962,16 +962,16 @@ function LootReserve:TransformSearchText(text)
     return text;
 end
 
-function LootReserve:StringTrim(str, chars)
+function LootReserveHoU:StringTrim(str, chars)
     chars = chars or "%s"
     return (str:match("^" .. chars .. "*(.-)" .. chars .. "*$"));
 end
 
-function LootReserve:FormatToRegexp(fmt)
+function LootReserveHoU:FormatToRegexp(fmt)
     return fmt:gsub("%d+%$",""):gsub("%(", "%%("):gsub("%)", "%%)"):gsub("%%s", "(.+)"):gsub("%%d", "(%%d+)");
 end
 
-function LootReserve:Deepcopy(orig)
+function LootReserveHoU:Deepcopy(orig)
     if type(orig) == 'table' then
         local copy = { };
         for orig_key, orig_value in next, orig, nil do
@@ -984,7 +984,7 @@ function LootReserve:Deepcopy(orig)
     end
 end
 
-function LootReserve:TableRemove(tbl, val)
+function LootReserveHoU:TableRemove(tbl, val)
     for index, i in ipairs(tbl) do
         if i == val then
             return table.remove(tbl, index);
@@ -993,7 +993,7 @@ function LootReserve:TableRemove(tbl, val)
     return nil;
 end
 
-function LootReserve:TableCount(tbl, val)
+function LootReserveHoU:TableCount(tbl, val)
     local count = 0;
     for _, i in ipairs(tbl) do
         if i == val then
@@ -1003,7 +1003,7 @@ function LootReserve:TableCount(tbl, val)
     return count;
 end
 
-function LootReserve:Contains(tbl, val)
+function LootReserveHoU:Contains(tbl, val)
     for _, i in ipairs(tbl) do
         if i == val then
             return true;
@@ -1012,7 +1012,7 @@ function LootReserve:Contains(tbl, val)
     return false;
 end
 
-function LootReserve:Ordered_old(tbl, sorter)
+function LootReserveHoU:Ordered_old(tbl, sorter)
     local __orderedIndex;
     local function __genOrderedIndex(t)
         local orderedIndex = { };
@@ -1053,7 +1053,7 @@ function LootReserve:Ordered_old(tbl, sorter)
     return orderedNext, tbl, nil;
 end
 
-function LootReserve:Ordered(tbl, sorter)
+function LootReserveHoU:Ordered(tbl, sorter)
     local __orderedIndex = { };
     for key in pairs(tbl) do
         table.insert(__orderedIndex, key);
@@ -1075,7 +1075,7 @@ function LootReserve:Ordered(tbl, sorter)
     return orderedNext, tbl, nil;
 end
 
-function LootReserve:MakeMenuSeparator()
+function LootReserveHoU:MakeMenuSeparator()
     return
     {
         text              = "",
@@ -1106,7 +1106,7 @@ function LootReserve:MakeMenuSeparator()
     };
 end
 
-function LootReserve:RepeatedTable(element, count)
+function LootReserveHoU:RepeatedTable(element, count)
     local result = { };
     for i = 1, count do
         table.insert(result, element);
@@ -1114,7 +1114,7 @@ function LootReserve:RepeatedTable(element, count)
     return result;
 end
 
-function LootReserve:FormatPlayersText(players, colorFunc)
+function LootReserveHoU:FormatPlayersText(players, colorFunc)
     colorFunc = colorFunc or function(...) return ...; end
 
     local playersSorted = { };
@@ -1127,13 +1127,13 @@ function LootReserve:FormatPlayersText(players, colorFunc)
     end
 
     local text = "";
-    for _, player in LootReserve:Ordered(playersSorted) do
+    for _, player in LootReserveHoU:Ordered(playersSorted) do
         text = text .. (#text > 0 and ", " or "") .. colorFunc(player);
     end
     return text;
 end
 
-function LootReserve:FormatPlayersTextColored(players, colorFunc)
+function LootReserveHoU:FormatPlayersTextColored(players, colorFunc)
     return self:FormatPlayersText(players, function(...) return self:ColoredPlayer(...); end);
 end
 
@@ -1160,20 +1160,20 @@ local function FormatReservesText(players, excludePlayer, colorFunc)
     return text;
 end
 
-function LootReserve:FormatReservesText(players, excludePlayer)
+function LootReserveHoU:FormatReservesText(players, excludePlayer)
     return FormatReservesText(players, excludePlayer);
 end
 
-function LootReserve:FormatReservesTextColored(players, excludePlayer)
+function LootReserveHoU:FormatReservesTextColored(players, excludePlayer)
     return FormatReservesText(players, excludePlayer, function(...) return self:ColoredPlayer(...); end);
 end
 
-function LootReserve:GetCategoriesText(categories, shortName, delimiter)
+function LootReserveHoU:GetCategoriesText(categories, shortName, delimiter)
     local name = shortName and "NameShort" or "Name";
     delimiter = delimiter or " / ";
     local text = ""
     for i, category in ipairs(categories or { }) do
-        text = format("%s%s%s", text, i == 1 and "" or delimiter, LootReserve.Data.Categories[category][name]);
+        text = format("%s%s%s", text, i == 1 and "" or delimiter, LootReserveHoU.Data.Categories[category][name]);
     end
     return text;
 end
@@ -1192,26 +1192,26 @@ local function GetReservesData(players, me, colorFunc)
     return FormatReservesText(players, me, colorFunc), me and reservesCount[me] or 0, #uniquePlayers, #players;
 end
 
-function LootReserve:GetReservesData(players, me)
+function LootReserveHoU:GetReservesData(players, me)
     return GetReservesData(players, me);
 end
 
-function LootReserve:GetReservesDataColored(players, me)
+function LootReserveHoU:GetReservesDataColored(players, me)
     return GetReservesData(players, me, function(...) return self:ColoredPlayer(...); end);
 end
 
 local function GetReservesString(server, isUpdate, link, reservesText, myReserves, uniqueReservers, reserves)
     local blind, multireserve;
     if server then
-        blind = LootReserve.Server.CurrentSession and LootReserve.Server.CurrentSession.Settings.Blind;
-        multireserve = LootReserve.Server.CurrentSession and LootReserve.Server.CurrentSession.Settings.Multireserve;
+        blind = LootReserveHoU.Server.CurrentSession and LootReserveHoU.Server.CurrentSession.Settings.Blind;
+        multireserve = LootReserveHoU.Server.CurrentSession and LootReserveHoU.Server.CurrentSession.Settings.Multireserve;
 
         if blind then
             return "";
         end
     else
-        blind = LootReserve.Client.Blind;
-        multireserve = LootReserve.Client.Multireserve;
+        blind = LootReserveHoU.Client.Blind;
+        multireserve = LootReserveHoU.Client.Multireserve;
     end
 
     if uniqueReservers <= 1 then
@@ -1243,10 +1243,10 @@ local function GetReservesString(server, isUpdate, link, reservesText, myReserve
     end
 end
 
-function LootReserve:GetReservesString(server, players, player, isUpdate, link)
+function LootReserveHoU:GetReservesString(server, players, player, isUpdate, link)
     return GetReservesString(self, isUpdate, link, self:GetReservesData(players, player));
 end
 
-function LootReserve:GetReservesStringColored(server, players, player, isUpdate, link)
+function LootReserveHoU:GetReservesStringColored(server, players, player, isUpdate, link)
     return GetReservesString(server, isUpdate, link, self:GetReservesDataColored(players, player));
 end

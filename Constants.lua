@@ -1,12 +1,12 @@
-LootReserve = LootReserve or { };
-LootReserve.Constants = { };
+LootReserveHoU = LootReserveHoU or { };
+LootReserveHoU.Constants = { };
 
-LootReserve.Constants.MAX_RESERVES          = 99;
-LootReserve.Constants.MAX_MULTIRESERVES     = 99;
-LootReserve.Constants.MAX_RESERVES_PER_ITEM = 99;
-LootReserve.Constants.MAX_CHAT_STORAGE      = 25;
+LootReserveHoU.Constants.MAX_RESERVES          = 99;
+LootReserveHoU.Constants.MAX_MULTIRESERVES     = 99;
+LootReserveHoU.Constants.MAX_RESERVES_PER_ITEM = 99;
+LootReserveHoU.Constants.MAX_CHAT_STORAGE      = 25;
 
-LootReserve.Constants.ReserveResult = {
+LootReserveHoU.Constants.ReserveResult = {
     OK                       = 0,
     NotInRaid                = 1,
     NoSession                = 2,
@@ -26,7 +26,7 @@ LootReserve.Constants.ReserveResult = {
     FailedLimitPartial       = 16,
     FailedUsable             = 17,
 };
-LootReserve.Constants.CancelReserveResult = {
+LootReserveHoU.Constants.CancelReserveResult = {
     OK                = 0,
     NotInRaid         = 1,
     NoSession         = 2,
@@ -39,33 +39,33 @@ LootReserve.Constants.CancelReserveResult = {
     InternalError     = 9,
     NotEnoughReserves = 10,
 };
-LootReserve.Constants.OptResult = {
+LootReserveHoU.Constants.OptResult = {
     OK                = 0,
     NotInRaid         = 1,
     NoSession         = 2,
     NotMember         = 4,
 };
-LootReserve.Constants.ReserveDeltaResult = {
+LootReserveHoU.Constants.ReserveDeltaResult = {
     NoSession         = 2,
     NotMember         = 4,
 };
-LootReserve.Constants.ReservesSorting = {
+LootReserveHoU.Constants.ReservesSorting = {
     ByTime   = 0,
     ByName   = 1,
     BySource = 2,
     ByLooter = 3,
 };
-LootReserve.Constants.WinnerReservesRemoval = {
+LootReserveHoU.Constants.WinnerReservesRemoval = {
     None      = 0,
     Single    = 1,
     Smart     = 2,
     All       = 3,
     Duplicate = 4,
 };
-LootReserve.Constants.ChatReservesListLimit = {
+LootReserveHoU.Constants.ChatReservesListLimit = {
     None = -1,
 };
-LootReserve.Constants.ChatAnnouncement = {
+LootReserveHoU.Constants.ChatAnnouncement = {
     SessionStart        = 1,
     SessionResume       = 2,
     SessionStop         = 3,
@@ -78,31 +78,31 @@ LootReserve.Constants.ChatAnnouncement = {
     SessionBlindToggle  = 10,
     SessionReserves     = 11,
 };
-LootReserve.Constants.DefaultPhases = {
+LootReserveHoU.Constants.DefaultPhases = {
     "Main Spec",
     "Off Spec",
     "Collection",
     "Vendor",
 };
-LootReserve.Constants.WonRollPhase = {
+LootReserveHoU.Constants.WonRollPhase = {
     Reserve  = 1,
     RaidRoll = 2,
 };
-LootReserve.Constants.RollType = {
+LootReserveHoU.Constants.RollType = {
     NotRolled = 0,
     Passed    = -1,
     Deleted   = -2,
 };
-LootReserve.Constants.LoadState = {
+LootReserveHoU.Constants.LoadState = {
     NotStarted  = 0,
     Started     = 1,
     SessionDone = 2,
     Pending     = 3,
     AllDone     = 4,
 };
-LootReserve.Constants.ClassFilenameToClassID   = { };
-LootReserve.Constants.ClassLocalizedToFilename = { };
-LootReserve.Constants.ItemQuality = {
+LootReserveHoU.Constants.ClassFilenameToClassID   = { };
+LootReserveHoU.Constants.ClassLocalizedToFilename = { };
+LootReserveHoU.Constants.ItemQuality = {
     [-1] = "All",
     [0]  = "Junk",
     [1]  = "Common",
@@ -114,7 +114,7 @@ LootReserve.Constants.ItemQuality = {
     [7]  = "Heirloom",
     [99] = "None",
 };
-LootReserve.Constants.RedundantSubTypes = {
+LootReserveHoU.Constants.RedundantSubTypes = {
     ["Polearms"]  = "Polearm",
     ["Staves"]    = "Staff",
     ["Bows"]      = "Bow",
@@ -130,7 +130,7 @@ LootReserve.Constants.RedundantSubTypes = {
     ["Totems"]    = "Totem",
     ["Sigils"]    = "Sigil",
 };
-LootReserve.Constants.WeaponTypeNames = {
+LootReserveHoU.Constants.WeaponTypeNames = {
     ["Two-Handed Axes"]   = "Axe",
     ["One-Handed Axes"]   = "Axe",
     ["Two-Handed Swords"] = "Sword",
@@ -147,11 +147,11 @@ LootReserve.Constants.WeaponTypeNames = {
     ["Thrown"]            = "Thrown Weapon",
     ["Wands"]             = "Wand",
 };
-LootReserve.Constants.Genders = {
+LootReserveHoU.Constants.Genders = {
     Male   = 2,
     Female = 3,
 };
-LootReserve.Constants.Races = {
+LootReserveHoU.Constants.Races = {
     Human    = 1,
     Dwarf    = 3,
     Gnome    = 7,
@@ -165,46 +165,46 @@ LootReserve.Constants.Races = {
     Worgen   = 22,
     Goblin   = 9,
 };
-LootReserve.Constants.Sounds = {
+LootReserveHoU.Constants.Sounds = {
     LevelUp = 1440,
     Cheer = {
-        [LootReserve.Constants.Races.Human]    = {[LootReserve.Constants.Genders.Male] = 2677, [LootReserve.Constants.Genders.Female] = 2689},
-        [LootReserve.Constants.Races.Dwarf]    = {[LootReserve.Constants.Genders.Male] = 2725, [LootReserve.Constants.Genders.Female] = 2737},
-        [LootReserve.Constants.Races.Gnome]    = {[LootReserve.Constants.Genders.Male] = 2835, [LootReserve.Constants.Genders.Female] = 2847},
-        [LootReserve.Constants.Races.NightElf] = {[LootReserve.Constants.Genders.Male] = 2749, [LootReserve.Constants.Genders.Female] = 2761},
-        [LootReserve.Constants.Races.Orc]      = {[LootReserve.Constants.Genders.Male] = 2701, [LootReserve.Constants.Genders.Female] = 2713},
-        [LootReserve.Constants.Races.Troll]    = {[LootReserve.Constants.Genders.Male] = 2859, [LootReserve.Constants.Genders.Female] = 2871},
-        [LootReserve.Constants.Races.Tauren]   = {[LootReserve.Constants.Genders.Male] = 2797, [LootReserve.Constants.Genders.Female] = 2810},
-        [LootReserve.Constants.Races.Scourge]  = {[LootReserve.Constants.Genders.Male] = 2773, [LootReserve.Constants.Genders.Female] = 2785},
-        [LootReserve.Constants.Races.Draenei]  = {[LootReserve.Constants.Genders.Male] = 9706, [LootReserve.Constants.Genders.Female] = 9681},
-        [LootReserve.Constants.Races.BloodElf] = {[LootReserve.Constants.Genders.Male] = 9656, [LootReserve.Constants.Genders.Female] = 9632},
+        [LootReserveHoU.Constants.Races.Human]    = {[LootReserveHoU.Constants.Genders.Male] = 2677, [LootReserveHoU.Constants.Genders.Female] = 2689},
+        [LootReserveHoU.Constants.Races.Dwarf]    = {[LootReserveHoU.Constants.Genders.Male] = 2725, [LootReserveHoU.Constants.Genders.Female] = 2737},
+        [LootReserveHoU.Constants.Races.Gnome]    = {[LootReserveHoU.Constants.Genders.Male] = 2835, [LootReserveHoU.Constants.Genders.Female] = 2847},
+        [LootReserveHoU.Constants.Races.NightElf] = {[LootReserveHoU.Constants.Genders.Male] = 2749, [LootReserveHoU.Constants.Genders.Female] = 2761},
+        [LootReserveHoU.Constants.Races.Orc]      = {[LootReserveHoU.Constants.Genders.Male] = 2701, [LootReserveHoU.Constants.Genders.Female] = 2713},
+        [LootReserveHoU.Constants.Races.Troll]    = {[LootReserveHoU.Constants.Genders.Male] = 2859, [LootReserveHoU.Constants.Genders.Female] = 2871},
+        [LootReserveHoU.Constants.Races.Tauren]   = {[LootReserveHoU.Constants.Genders.Male] = 2797, [LootReserveHoU.Constants.Genders.Female] = 2810},
+        [LootReserveHoU.Constants.Races.Scourge]  = {[LootReserveHoU.Constants.Genders.Male] = 2773, [LootReserveHoU.Constants.Genders.Female] = 2785},
+        [LootReserveHoU.Constants.Races.Draenei]  = {[LootReserveHoU.Constants.Genders.Male] = 9706, [LootReserveHoU.Constants.Genders.Female] = 9681},
+        [LootReserveHoU.Constants.Races.BloodElf] = {[LootReserveHoU.Constants.Genders.Male] = 9656, [LootReserveHoU.Constants.Genders.Female] = 9632},
     },
     Congratulate = {
-        [LootReserve.Constants.Races.Human]    = {[LootReserve.Constants.Genders.Male] = 6168, [LootReserve.Constants.Genders.Female] = 6141},
-        [LootReserve.Constants.Races.Dwarf]    = {[LootReserve.Constants.Genders.Male] = 6113, [LootReserve.Constants.Genders.Female] = 6104},
-        [LootReserve.Constants.Races.Gnome]    = {[LootReserve.Constants.Genders.Male] = 6131, [LootReserve.Constants.Genders.Female] = 6122},
-        [LootReserve.Constants.Races.NightElf] = {[LootReserve.Constants.Genders.Male] = 6186, [LootReserve.Constants.Genders.Female] = 6177},
-        [LootReserve.Constants.Races.Orc]      = {[LootReserve.Constants.Genders.Male] = 6366, [LootReserve.Constants.Genders.Female] = 6357},
-        [LootReserve.Constants.Races.Troll]    = {[LootReserve.Constants.Genders.Male] = 6402, [LootReserve.Constants.Genders.Female] = 6393},
-        [LootReserve.Constants.Races.Tauren]   = {[LootReserve.Constants.Genders.Male] = 6384, [LootReserve.Constants.Genders.Female] = 6375},
-        [LootReserve.Constants.Races.Scourge]  = {[LootReserve.Constants.Genders.Male] = 6420, [LootReserve.Constants.Genders.Female] = 6411},
-        [LootReserve.Constants.Races.Draenei]  = {[LootReserve.Constants.Genders.Male] = 9707, [LootReserve.Constants.Genders.Female] = 9682},
-        [LootReserve.Constants.Races.BloodElf] = {[LootReserve.Constants.Genders.Male] = 9657, [LootReserve.Constants.Genders.Female] = 9641},
+        [LootReserveHoU.Constants.Races.Human]    = {[LootReserveHoU.Constants.Genders.Male] = 6168, [LootReserveHoU.Constants.Genders.Female] = 6141},
+        [LootReserveHoU.Constants.Races.Dwarf]    = {[LootReserveHoU.Constants.Genders.Male] = 6113, [LootReserveHoU.Constants.Genders.Female] = 6104},
+        [LootReserveHoU.Constants.Races.Gnome]    = {[LootReserveHoU.Constants.Genders.Male] = 6131, [LootReserveHoU.Constants.Genders.Female] = 6122},
+        [LootReserveHoU.Constants.Races.NightElf] = {[LootReserveHoU.Constants.Genders.Male] = 6186, [LootReserveHoU.Constants.Genders.Female] = 6177},
+        [LootReserveHoU.Constants.Races.Orc]      = {[LootReserveHoU.Constants.Genders.Male] = 6366, [LootReserveHoU.Constants.Genders.Female] = 6357},
+        [LootReserveHoU.Constants.Races.Troll]    = {[LootReserveHoU.Constants.Genders.Male] = 6402, [LootReserveHoU.Constants.Genders.Female] = 6393},
+        [LootReserveHoU.Constants.Races.Tauren]   = {[LootReserveHoU.Constants.Genders.Male] = 6384, [LootReserveHoU.Constants.Genders.Female] = 6375},
+        [LootReserveHoU.Constants.Races.Scourge]  = {[LootReserveHoU.Constants.Genders.Male] = 6420, [LootReserveHoU.Constants.Genders.Female] = 6411},
+        [LootReserveHoU.Constants.Races.Draenei]  = {[LootReserveHoU.Constants.Genders.Male] = 9707, [LootReserveHoU.Constants.Genders.Female] = 9682},
+        [LootReserveHoU.Constants.Races.BloodElf] = {[LootReserveHoU.Constants.Genders.Male] = 9657, [LootReserveHoU.Constants.Genders.Female] = 9641},
     },
     Cry = {
-        [LootReserve.Constants.Races.Human]    = {[LootReserve.Constants.Genders.Male] = 6921, [LootReserve.Constants.Genders.Female] = 6916},
-        [LootReserve.Constants.Races.Dwarf]    = {[LootReserve.Constants.Genders.Male] = 6901, [LootReserve.Constants.Genders.Female] = 6895},
-        [LootReserve.Constants.Races.Gnome]    = {[LootReserve.Constants.Genders.Male] = 6911, [LootReserve.Constants.Genders.Female] = 6906},
-        [LootReserve.Constants.Races.NightElf] = {[LootReserve.Constants.Genders.Male] = 6931, [LootReserve.Constants.Genders.Female] = 6926},
-        [LootReserve.Constants.Races.Orc]      = {[LootReserve.Constants.Genders.Male] = 6941, [LootReserve.Constants.Genders.Female] = 6936},
-        [LootReserve.Constants.Races.Troll]    = {[LootReserve.Constants.Genders.Male] = 6961, [LootReserve.Constants.Genders.Female] = 6956},
-        [LootReserve.Constants.Races.Tauren]   = {[LootReserve.Constants.Genders.Male] = 6951, [LootReserve.Constants.Genders.Female] = 6946},
-        [LootReserve.Constants.Races.Scourge]  = {[LootReserve.Constants.Genders.Male] = 6972, [LootReserve.Constants.Genders.Female] = 6967},
-        [LootReserve.Constants.Races.Draenei]  = {[LootReserve.Constants.Genders.Male] = 9701, [LootReserve.Constants.Genders.Female] = 9676},
-        [LootReserve.Constants.Races.BloodElf] = {[LootReserve.Constants.Genders.Male] = 9651, [LootReserve.Constants.Genders.Female] = 9647},
+        [LootReserveHoU.Constants.Races.Human]    = {[LootReserveHoU.Constants.Genders.Male] = 6921, [LootReserveHoU.Constants.Genders.Female] = 6916},
+        [LootReserveHoU.Constants.Races.Dwarf]    = {[LootReserveHoU.Constants.Genders.Male] = 6901, [LootReserveHoU.Constants.Genders.Female] = 6895},
+        [LootReserveHoU.Constants.Races.Gnome]    = {[LootReserveHoU.Constants.Genders.Male] = 6911, [LootReserveHoU.Constants.Genders.Female] = 6906},
+        [LootReserveHoU.Constants.Races.NightElf] = {[LootReserveHoU.Constants.Genders.Male] = 6931, [LootReserveHoU.Constants.Genders.Female] = 6926},
+        [LootReserveHoU.Constants.Races.Orc]      = {[LootReserveHoU.Constants.Genders.Male] = 6941, [LootReserveHoU.Constants.Genders.Female] = 6936},
+        [LootReserveHoU.Constants.Races.Troll]    = {[LootReserveHoU.Constants.Genders.Male] = 6961, [LootReserveHoU.Constants.Genders.Female] = 6956},
+        [LootReserveHoU.Constants.Races.Tauren]   = {[LootReserveHoU.Constants.Genders.Male] = 6951, [LootReserveHoU.Constants.Genders.Female] = 6946},
+        [LootReserveHoU.Constants.Races.Scourge]  = {[LootReserveHoU.Constants.Genders.Male] = 6972, [LootReserveHoU.Constants.Genders.Female] = 6967},
+        [LootReserveHoU.Constants.Races.Draenei]  = {[LootReserveHoU.Constants.Genders.Male] = 9701, [LootReserveHoU.Constants.Genders.Female] = 9676},
+        [LootReserveHoU.Constants.Races.BloodElf] = {[LootReserveHoU.Constants.Genders.Male] = 9651, [LootReserveHoU.Constants.Genders.Female] = 9647},
     },
 };
-LootReserve.Constants.LocomotionPhrases = {
+LootReserveHoU.Constants.LocomotionPhrases = {
     "Advance",
     "Amble",
     "Apparate",
@@ -368,8 +368,8 @@ LootReserve.Constants.LocomotionPhrases = {
     "Zoom",
 };
 
-local result = LootReserve.Constants.ReserveResult;
-LootReserve.Constants.ReserveResultText =
+local result = LootReserveHoU.Constants.ReserveResult;
+LootReserveHoU.Constants.ReserveResultText =
 {
     [result.OK]                       = "",
     [result.NotInRaid]                = "You are not in the raid",
@@ -391,8 +391,8 @@ LootReserve.Constants.ReserveResultText =
     [result.FailedUsable]             = "You may not reserve unusable items",
 };
 
-local result = LootReserve.Constants.CancelReserveResult;
-LootReserve.Constants.CancelReserveResultText =
+local result = LootReserveHoU.Constants.CancelReserveResult;
+LootReserveHoU.Constants.CancelReserveResultText =
 {
     [result.OK]                = "",
     [result.NotInRaid]         = "You are not in the raid",
@@ -407,8 +407,8 @@ LootReserve.Constants.CancelReserveResultText =
     [result.NotEnoughReserves] = "You don't have that many reserves on that item",
 };
 
-local result = LootReserve.Constants.OptResult;
-LootReserve.Constants.OptResultText =
+local result = LootReserveHoU.Constants.OptResult;
+LootReserveHoU.Constants.OptResultText =
 {
     [result.OK]                       = "",
     [result.NotInRaid]                = "You are not in the raid",
@@ -416,15 +416,15 @@ LootReserve.Constants.OptResultText =
     [result.NotMember]                = "You are not participating in loot reserves",
 };
 
-local result = LootReserve.Constants.ReserveDeltaResult;
-LootReserve.Constants.ReserveDeltaResultText =
+local result = LootReserveHoU.Constants.ReserveDeltaResult;
+LootReserveHoU.Constants.ReserveDeltaResultText =
 {
     [result.NoSession]         = "Loot reserves aren't active",
     [result.NotMember]         = "You are not participating in loot reserves",
 };
 
-local enum = LootReserve.Constants.ReservesSorting;
-LootReserve.Constants.ReservesSortingText =
+local enum = LootReserveHoU.Constants.ReservesSorting;
+LootReserveHoU.Constants.ReservesSortingText =
 {
     [enum.ByTime]   = "By Time",
     [enum.ByName]   = "By Item Name",
@@ -432,8 +432,8 @@ LootReserve.Constants.ReservesSortingText =
     [enum.ByLooter] = "By Looter",
 };
 
-local enum = LootReserve.Constants.WinnerReservesRemoval;
-LootReserve.Constants.WinnerReservesRemovalText =
+local enum = LootReserveHoU.Constants.WinnerReservesRemoval;
+LootReserveHoU.Constants.WinnerReservesRemovalText =
 {
     [enum.None]      = "None",
     [enum.Single]    = "Just one",
@@ -442,31 +442,31 @@ LootReserve.Constants.WinnerReservesRemovalText =
     [enum.Smart]     = "Smart",
 };
 
-local enum = LootReserve.Constants.ChatReservesListLimit;
-LootReserve.Constants.ChatReservesListLimitText =
+local enum = LootReserveHoU.Constants.ChatReservesListLimit;
+LootReserveHoU.Constants.ChatReservesListLimitText =
 {
     [enum.None] = "None",
 };
 
-local enum = LootReserve.Constants.WonRollPhase;
-LootReserve.Constants.WonRollPhaseText =
+local enum = LootReserveHoU.Constants.WonRollPhase;
+LootReserveHoU.Constants.WonRollPhaseText =
 {
     [enum.Reserve]  = "Reserve",
     [enum.RaidRoll] = "Raid-Roll",
 };
 
-for i = 1, LootReserve:GetNumClasses() do
-    local name, file, id = LootReserve:GetClassInfo(i);
+for i = 1, LootReserveHoU:GetNumClasses() do
+    local name, file, id = LootReserveHoU:GetClassInfo(i);
     if file and id then
-        LootReserve.Constants.ClassFilenameToClassID[file] = id;
+        LootReserveHoU.Constants.ClassFilenameToClassID[file] = id;
     end
 end
 for filename, localized in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-    LootReserve.Constants.ClassLocalizedToFilename[localized] = filename;
+    LootReserveHoU.Constants.ClassLocalizedToFilename[localized] = filename;
 end
 for filename, localized in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-    LootReserve.Constants.ClassLocalizedToFilename[localized] = filename;
+    LootReserveHoU.Constants.ClassLocalizedToFilename[localized] = filename;
 end
-for localized, filename in pairs(LootReserve.Constants.ClassLocalizedToFilename) do
-    LootReserve.Constants.ClassLocalizedToFilename[localized:lower()] = filename;
+for localized, filename in pairs(LootReserveHoU.Constants.ClassLocalizedToFilename) do
+    LootReserveHoU.Constants.ClassLocalizedToFilename[localized:lower()] = filename;
 end

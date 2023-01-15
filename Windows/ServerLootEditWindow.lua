@@ -1,13 +1,13 @@
-function LootReserve.Server.LootEdit:UpdateLootList()
-    LootReserveServerButtonLootEdit:SetGlow(false);
-    for _ in pairs(LootReserve.Server:GetNewSessionItemConditions()) do
-        LootReserveServerButtonLootEdit:SetGlow(true);
+function LootReserveHoU.Server.LootEdit:UpdateLootList()
+    LootReserveHoUServerButtonLootEdit:SetGlow(false);
+    for _ in pairs(LootReserveHoU.Server:GetNewSessionItemConditions()) do
+        LootReserveHoUServerButtonLootEdit:SetGlow(true);
         break;
     end
 
     if not self.Window:IsShown() then return; end
 
-    local filter = LootReserve.ItemCache:FormatSearchText(self.Window.Search:GetText());
+    local filter = LootReserveHoU.ItemCache:FormatSearchText(self.Window.Search:GetText());
     if #filter < 3 and not tonumber(filter) then
         filter = nil;
     end
@@ -18,11 +18,11 @@ function LootReserve.Server.LootEdit:UpdateLootList()
     list.ContentHeight = 0;
 
     if not list.RevertEditsFrame then
-        list.RevertEditsFrame = CreateFrame("Frame", nil, list, "LootReserveLootEditRevertEditsFrame");
+        list.RevertEditsFrame = CreateFrame("Frame", nil, list, "LootReserveHoULootEditRevertEditsFrame");
     end
     list.RevertEditsFrame:Hide();
     if not list.AddCustomFrame then
-        list.AddCustomFrame = CreateFrame("Frame", nil, list, "LootReserveLootEditAddCustomFrame");
+        list.AddCustomFrame = CreateFrame("Frame", nil, list, "LootReserveHoULootEditAddCustomFrame");
     end
     list.AddCustomFrame:Hide();
 
@@ -37,7 +37,7 @@ function LootReserve.Server.LootEdit:UpdateLootList()
         list.LastIndex = list.LastIndex + 1;
         local frame = list.Frames[list.LastIndex];
         while not frame do
-            frame = CreateFrame("Frame", nil, list, "LootReserveLootEditListTemplate");
+            frame = CreateFrame("Frame", nil, list, "LootReserveHoULootEditListTemplate");
 
             if #list.Frames == 0 then
                 frame:SetPoint("TOPLEFT", list, "TOPLEFT");
@@ -68,7 +68,7 @@ function LootReserve.Server.LootEdit:UpdateLootList()
             frame:SetHeight(44);
             frame:Show();
 
-            local description = LootReserve:GetItemDescription(item:GetID());
+            local description = LootReserveHoU:GetItemDescription(item:GetID());
             local name, link, texture = item:GetNameLinkTexture();
 
             frame.Link = link;
@@ -77,9 +77,9 @@ function LootReserve.Server.LootEdit:UpdateLootList()
             frame.ItemFrame.Name:SetText((link or name or "|cFFFF4000Loading...|r"):gsub("[%[%]]", ""));
             frame.ItemFrame.Misc:SetText(source or description);
 
-            local tokenID = LootReserve.Data:GetToken(itemID);
-            local conditions = LootReserve.ItemConditions:Get(tokenID or itemID, true);
-            frame.ItemFrame:SetAlpha(conditions and (conditions.Hidden or conditions.Faction and not LootReserve.ItemConditions:TestFaction(conditions.Faction)) and 0.25 or 1);
+            local tokenID = LootReserveHoU.Data:GetToken(itemID);
+            local conditions = LootReserveHoU.ItemConditions:Get(tokenID or itemID, true);
+            frame.ItemFrame:SetAlpha(conditions and (conditions.Hidden or conditions.Faction and not LootReserveHoU.ItemConditions:TestFaction(conditions.Faction)) and 0.25 or 1);
             frame.ConditionsFrame.ClassMask:Update();
             frame.ConditionsFrame.State:Update();
             frame.ConditionsFrame.Limit:Update();
@@ -108,18 +108,18 @@ function LootReserve.Server.LootEdit:UpdateLootList()
 
     local missing = { };
     if self.SelectedCategory and self.SelectedCategory.Edited then
-        for itemID, conditions in pairs(LootReserve.Server:GetNewSessionItemConditions()) do
-            local item = LootReserve.ItemCache:Item(itemID);
+        for itemID, conditions in pairs(LootReserveHoU.Server:GetNewSessionItemConditions()) do
+            local item = LootReserveHoU.ItemCache:Item(itemID);
             createFrame(item);
             if not item:IsCached() then
                 table.insert(missing, item);
             end
         end
     elseif self.SelectedCategory and self.SelectedCategory.Search and filter then
-        for itemID, conditions in pairs(LootReserve.Server:GetNewSessionItemConditions()) do
+        for itemID, conditions in pairs(LootReserveHoU.Server:GetNewSessionItemConditions()) do
             if itemID ~= 0 and conditions.Custom then
                 local match = false;
-                local item = LootReserve.ItemCache:Item(itemID);
+                local item = LootReserveHoU.ItemCache:Item(itemID);
                 if item:IsCached() then
                     if matchesFilter(item, filter) then
                         createFrame(item, "Custom Item");
@@ -128,9 +128,9 @@ function LootReserve.Server.LootEdit:UpdateLootList()
                 else
                     table.insert(missing, item);
                 end
-                if filter and not match and LootReserve.Data:IsToken(itemID) then
-                    for _, rewardID in ipairs(LootReserve.Data:GetTokenRewards(itemID)) do
-                        local reward = LootReserve.ItemCache:Item(rewardID);
+                if filter and not match and LootReserveHoU.Data:IsToken(itemID) then
+                    for _, rewardID in ipairs(LootReserveHoU.Data:GetTokenRewards(itemID)) do
+                        local reward = LootReserveHoU.ItemCache:Item(rewardID);
                         if reward:IsCached() then
                             if item:IsCached() and matchesFilter(reward, filter) then
                                 createFrame(item, "Custom Item");
@@ -143,14 +143,14 @@ function LootReserve.Server.LootEdit:UpdateLootList()
                 end
             end
         end
-        for id, category in LootReserve:Ordered(LootReserve.Data.Categories, LootReserve.Data.CategorySorter) do
-            if category.Children and (not LootReserve.Server.NewSessionSettings.LootCategories or LootReserve:Contains(LootReserve.Server.NewSessionSettings.LootCategories, id)) and LootReserve.Data:IsCategoryVisible(category) then
+        for id, category in LootReserveHoU:Ordered(LootReserveHoU.Data.Categories, LootReserveHoU.Data.CategorySorter) do
+            if category.Children and (not LootReserveHoU.Server.NewSessionSettings.LootCategories or LootReserveHoU:Contains(LootReserveHoU.Server.NewSessionSettings.LootCategories, id)) and LootReserveHoU.Data:IsCategoryVisible(category) then
                 for _, child in ipairs(category.Children) do
                     if child.Loot then
                         for _, itemID in ipairs(child.Loot) do
                             if itemID ~= 0 then
                                 local match = false;
-                                local item = LootReserve.ItemCache:Item(itemID);
+                                local item = LootReserveHoU.ItemCache:Item(itemID);
                                 if item:IsCached() then
                                     if matchesFilter(item, filter) then
                                         createFrame(item, format("%s > %s", category.Name, child.Name));
@@ -159,9 +159,9 @@ function LootReserve.Server.LootEdit:UpdateLootList()
                                 else
                                     table.insert(missing, item);
                                 end
-                                if filter and not match and LootReserve.Data:IsToken(itemID) then
-                                    for _, rewardID in ipairs(LootReserve.Data:GetTokenRewards(itemID)) do
-                                        local reward = LootReserve.ItemCache:Item(rewardID);
+                                if filter and not match and LootReserveHoU.Data:IsToken(itemID) then
+                                    for _, rewardID in ipairs(LootReserveHoU.Data:GetTokenRewards(itemID)) do
+                                        local reward = LootReserveHoU.ItemCache:Item(rewardID);
                                         if reward:IsCached() then
                                             if item:IsCached() and matchesFilter(reward, filter) then
                                                 createFrame(item, format("%s > %s", category.Name, child.Name));
@@ -179,9 +179,9 @@ function LootReserve.Server.LootEdit:UpdateLootList()
             end
         end
     elseif self.SelectedCategory and self.SelectedCategory.Custom then
-        for itemID, conditions in pairs(LootReserve.Server:GetNewSessionItemConditions()) do
+        for itemID, conditions in pairs(LootReserveHoU.Server:GetNewSessionItemConditions()) do
             if itemID ~= 0 and conditions.Custom then
-                local item = LootReserve.ItemCache:Item(itemID);
+                local item = LootReserveHoU.ItemCache:Item(itemID);
                 createFrame(item);
                 if not item:IsCached() then
                     table.insert(missing, item);
@@ -191,28 +191,28 @@ function LootReserve.Server.LootEdit:UpdateLootList()
     elseif self.SelectedCategory and self.SelectedCategory.Loot then
         for _, itemID in ipairs(self.SelectedCategory.Loot) do
             if itemID ~= 0 then
-                local item = LootReserve.ItemCache:Item(itemID);
+                local item = LootReserveHoU.ItemCache:Item(itemID);
                 createFrame(item);
                 if not item:IsCached() then
                     table.insert(missing, item);
                 end
             elseif itemID == 0 then
-                createFrame(LootReserve.ItemCache:Item(0));
+                createFrame(LootReserveHoU.ItemCache:Item(0));
             end
         end
     end
     if #missing > 0 then
-        if #missing > LootReserve.ItemSearch.BatchCap then
-            for i = LootReserve.ItemSearch.BatchCap + 1, #missing do
+        if #missing > LootReserveHoU.ItemSearch.BatchCap then
+            for i = LootReserveHoU.ItemSearch.BatchCap + 1, #missing do
                 missing[i] = nil;
             end
         end
         if not self.PendingLootEditUpdate or self.PendingLootEditUpdate:IsComplete() then
-            self.PendingLootEditUpdate = LootReserve.ItemCache:OnCache(missing, function()
+            self.PendingLootEditUpdate = LootReserveHoU.ItemCache:OnCache(missing, function()
                 self:UpdateLootList();
             end);
         end
-        self.PendingLootEditUpdate:SetSpeed(math.ceil(#missing/LootReserve.ItemSearch.BatchFrames));
+        self.PendingLootEditUpdate:SetSpeed(math.ceil(#missing/LootReserveHoU.ItemSearch.BatchFrames));
     end
 
     if self.SelectedCategory.Edited and list.LastIndex > 0 then
@@ -233,10 +233,10 @@ function LootReserve.Server.LootEdit:UpdateLootList()
     list:GetParent():UpdateScrollChildRect();
 end
 
-function LootReserve.Server.LootEdit:UpdateCategories()
-    LootReserveServerButtonLootEdit:SetGlow(false);
-    for _ in pairs(LootReserve.Server:GetNewSessionItemConditions()) do
-        LootReserveServerButtonLootEdit:SetGlow(true);
+function LootReserveHoU.Server.LootEdit:UpdateCategories()
+    LootReserveHoUServerButtonLootEdit:SetGlow(false);
+    for _ in pairs(LootReserveHoU.Server:GetNewSessionItemConditions()) do
+        LootReserveHoUServerButtonLootEdit:SetGlow(true);
         break;
     end
 
@@ -251,10 +251,10 @@ function LootReserve.Server.LootEdit:UpdateCategories()
         local frame = list.Frames[list.LastIndex];
         while not frame do
             frame = CreateFrame("CheckButton", nil, list,
-                category.Separator and "LootReserveCategoryListSeparatorTemplate" or
-                category.Children and "LootReserveCategoryListHeaderTemplate" or
-                category.Header and "LootReserveCategoryListSubheaderTemplate" or
-                "LootReserveCategoryListButtonTemplate");
+                category.Separator and "LootReserveHoUCategoryListSeparatorTemplate" or
+                category.Children and "LootReserveHoUCategoryListHeaderTemplate" or
+                category.Header and "LootReserveHoUCategoryListSubheaderTemplate" or
+                "LootReserveHoUCategoryListButtonTemplate");
 
             if #list.Frames == 0 then
                 frame:SetPoint("TOPLEFT", list, "TOPLEFT");
@@ -297,14 +297,14 @@ function LootReserve.Server.LootEdit:UpdateCategories()
         end
     end
 
-    for id, category in LootReserve:Ordered(LootReserve.Data.Categories, LootReserve.Data.CategorySorter) do
-        if LootReserve.Data:IsCategoryVisible(category) then
+    for id, category in LootReserveHoU:Ordered(LootReserveHoU.Data.Categories, LootReserveHoU.Data.CategorySorter) do
+        if LootReserveHoU.Data:IsCategoryVisible(category) then
             createCategoryButtonsRecursively(id, category);
         end
     end
 
     for i, frame in ipairs(list.Frames) do
-        if i <= list.LastIndex and (frame.CategoryID < 0 or not LootReserve.Server.NewSessionSettings.LootCategories or LootReserve:Contains(LootReserve.Server.NewSessionSettings.LootCategories, frame.CategoryID)) then
+        if i <= list.LastIndex and (frame.CategoryID < 0 or not LootReserveHoU.Server.NewSessionSettings.LootCategories or LootReserveHoU:Contains(LootReserveHoU.Server.NewSessionSettings.LootCategories, frame.CategoryID)) then
             frame:SetHeight(frame.DefaultHeight);
             frame:Show();
         else
@@ -322,7 +322,7 @@ function LootReserve.Server.LootEdit:UpdateCategories()
     list:GetParent():UpdateScrollChildRect();
 end
 
-function LootReserve.Server.LootEdit:OnCategoryClick(button)
+function LootReserveHoU.Server.LootEdit:OnCategoryClick(button)
     CloseMenus();
     if self.FocusedEditBox then
         self.FocusedEditBox:ClearFocus();
@@ -352,10 +352,10 @@ function LootReserve.Server.LootEdit:OnCategoryClick(button)
     self:UpdateLootList();
 end
 
-function LootReserve.Server.LootEdit:OnWindowLoad(window)
+function LootReserveHoU.Server.LootEdit:OnWindowLoad(window)
     self.Window = window;
     self.Window.TopLeftCorner:SetSize(32, 32); -- Blizzard UI bug?
-    self.Window.TitleText:SetText("LootReserve Host - Loot List Edit");
+    self.Window.TitleText:SetText("LootReserveHoU Host - Loot List Edit");
     self.Window:SetMinResize(550, 250);
     self:UpdateCategories();
 end

@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<Script file="ServerMembersEditWindow.lua" />
-	<Frame name="LootReserveServerMembersEditItemTemplate" virtual="true">
+	<Frame name="LootReserveHoUServerMembersEditItemTemplate" virtual="true">
 		<Size x="18" y="18" />
 		<Frames>
 			<Button parentKey="Icon" enableMouse="true" setAllPoints="true">
@@ -31,7 +31,7 @@
 			</Button>
 		</Frames>
 	</Frame>
-	<Frame name="LootReserveServerMembersEditMemberTemplate" virtual="true">
+	<Frame name="LootReserveHoUServerMembersEditMemberTemplate" virtual="true">
 		<Size y="20" />
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -100,7 +100,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame parentKey="NameFrame" inherits="LootReserveTextWithButtonsTemplate">
+			<Frame parentKey="NameFrame" inherits="LootReserveHoUTextWithButtonsTemplate">
 				<Anchors>
 					<Anchor point="TOP" />
 					<Anchor point="BOTTOM" />
@@ -136,7 +136,7 @@
 					<OnLoad>
 						self.UpdateTooltip = function(self)
 							local player = self:GetParent().Player;
-							local won = LootReserve.Server.CurrentSession and LootReserve.Server.CurrentSession.Members[player] and LootReserve.Server.CurrentSession.Members[player].WonRolls;
+							local won = LootReserveHoU.Server.CurrentSession and LootReserveHoU.Server.CurrentSession.Members[player] and LootReserveHoU.Server.CurrentSession.Members[player].WonRolls;
 							if won then
 								local missing = { };
 								GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -150,10 +150,10 @@
 
 									local phaseText;
 									local phaseColor;
-									if roll.Phase == LootReserve.Constants.WonRollPhase.Reserve then
+									if roll.Phase == LootReserveHoU.Constants.WonRollPhase.Reserve then
 										phaseText = "Reserved";
 										phaseColor = NORMAL_FONT_COLOR;
-									elseif roll.Phase == LootReserve.Constants.WonRollPhase.RaidRoll then
+									elseif roll.Phase == LootReserveHoU.Constants.WonRollPhase.RaidRoll then
 										phaseText = "Raid-Roll";
 										phaseColor = GRAY_FONT_COLOR;
 									elseif type(roll.Phase) == "string" then
@@ -179,7 +179,7 @@
 								GameTooltip:Show();
 
 								if #missing > 0 then
-									LootReserve.ItemCache:OnCache(missing, function()
+									LootReserveHoU.ItemCache:OnCache(missing, function()
 										if GameTooltip:IsOwned(self) then
 											self:UpdateTooltip();
 										end
@@ -194,7 +194,7 @@
 					<OnLeave function="GameTooltip_Hide" />
 				</Scripts>
 			</Button>
-			<CheckButton parentKey="CheckButtonLocked" inherits="LootReserveCheckBoxTemplate">
+			<CheckButton parentKey="CheckButtonLocked" inherits="LootReserveHoUCheckBoxTemplate">
 				<Anchors>
 					<Anchor point="CENTER" relativeKey="$parent.Locked" relativePoint="CENTER" />
 				</Anchors>
@@ -204,12 +204,12 @@
 					</OnLoad>
 					<OnClick inherit="prepend">
 						self:GetParent().Member.Locked = self:GetChecked();
-						if LootReserve.Server.CurrentSession and LootReserve.Server.CurrentSession.AcceptingReserves then
-							if LootReserve:IsPlayerOnline(self:GetParent().Player) then
-								LootReserve.Comm:SendSessionInfo(self:GetParent().Player);
+						if LootReserveHoU.Server.CurrentSession and LootReserveHoU.Server.CurrentSession.AcceptingReserves then
+							if LootReserveHoU:IsPlayerOnline(self:GetParent().Player) then
+								LootReserveHoU.Comm:SendSessionInfo(self:GetParent().Player);
 							end
-							if LootReserve.Client.Masquerade and LootReserve:IsSamePlayer(LootReserve.Client.Masquerade, self:GetParent().Player) then
-								LootReserve.Comm:SendSessionInfo(LootReserve:Me());
+							if LootReserveHoU.Client.Masquerade and LootReserveHoU:IsSamePlayer(LootReserveHoU.Client.Masquerade, self:GetParent().Player) then
+								LootReserveHoU.Comm:SendSessionInfo(LootReserveHoU:Me());
 							end
 						end
 					</OnClick>
@@ -224,7 +224,7 @@
 					<OnClick>
 						if self:IsEnabled() then
 							PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
-							LootReserve.Server:IncrementReservesDelta(self:GetParent().Player, -1 * (IsShiftKeyDown() and 10 or 1));
+							LootReserveHoU.Server:IncrementReservesDelta(self:GetParent().Player, -1 * (IsShiftKeyDown() and 10 or 1));
 						end
 					</OnClick>
 				</Scripts>
@@ -242,7 +242,7 @@
 					<OnClick>
 						if self:IsEnabled() then
 							PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
-							LootReserve.Server:IncrementReservesDelta(self:GetParent().Player, IsShiftKeyDown() and 10 or 1);
+							LootReserveHoU.Server:IncrementReservesDelta(self:GetParent().Player, IsShiftKeyDown() and 10 or 1);
 						end
 					</OnClick>
 				</Scripts>
@@ -271,14 +271,14 @@
 			</OnUpdate>
 		</Scripts>
 	</Frame>
-	<Frame name="LootReserveServerMembersEditWindow" parent="UIParent" inherits="BasicFrameTemplateWithInset" toplevel="true" movable="true" resizable="true" enableMouse="true" clampedToScreen="true" hidden="true">
+	<Frame name="LootReserveHoUServerMembersEditWindow" parent="UIParent" inherits="BasicFrameTemplateWithInset" toplevel="true" movable="true" resizable="true" enableMouse="true" clampedToScreen="true" hidden="true">
 		<Size x="650" y="250" />
 		<Anchors>
 			<Anchor point="CENTER" />
 		</Anchors>
 		<Frames>
-			<Button inherits="LootReserveCommonFrameMovingHeaderTemplate" />
-			<Button inherits="LootReserveCommonFrameSizeGrabberTemplate" />
+			<Button inherits="LootReserveHoUCommonFrameMovingHeaderTemplate" />
+			<Button inherits="LootReserveHoUCommonFrameSizeGrabberTemplate" />
 			<Frame parentKey="Header">
 				<Size y="20" />
 				<Anchors>
@@ -434,7 +434,7 @@
 							<OnEnter>
 								GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 								GameTooltip:SetText("Reserves Locked-in");
-								if LootReserve.Server.CurrentSession and not LootReserve.Server.CurrentSession.Settings.Lock then
+								if LootReserveHoU.Server.CurrentSession and not LootReserveHoU.Server.CurrentSession.Settings.Lock then
 									GameTooltip:AddLine("Meaningless when the \"Lock-in\" option is not enabled for this session", HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1, 1);
 								end
 								GameTooltip:Show();
@@ -478,24 +478,24 @@
 				</Frames>
 				<Scripts>
 					<OnClick>
-						if LootReserve.Server.CurrentSession then
-							LootReserve.Server.Export.Window:SetShown(not LootReserve.Server.Export.Window:IsShown());
+						if LootReserveHoU.Server.CurrentSession then
+							LootReserveHoU.Server.Export.Window:SetShown(not LootReserveHoU.Server.Export.Window:IsShown());
 							return;
 						end
 
 						local menu =
 						{
-							{ text = "Import from CSV", disabled = LootReserve.Server.CurrentSession ~= nil, func = function() LootReserve.Server.Import.Window:Show(); end },
-							{ text = "Export to CSV", func = function() LootReserve.Server.Export.Window:Show(); end },
-							{ text = "Clear Imported Data", disabled = LootReserve.Server.CurrentSession or not next(LootReserve.Server.NewSessionSettings.ImportedMembers), func = function() LootReserve.Server.MembersEdit:ClearImported(); end },
-							LootReserve:MakeMenuSeparator(),
+							{ text = "Import from CSV", disabled = LootReserveHoU.Server.CurrentSession ~= nil, func = function() LootReserveHoU.Server.Import.Window:Show(); end },
+							{ text = "Export to CSV", func = function() LootReserveHoU.Server.Export.Window:Show(); end },
+							{ text = "Clear Imported Data", disabled = LootReserveHoU.Server.CurrentSession or not next(LootReserveHoU.Server.NewSessionSettings.ImportedMembers), func = function() LootReserveHoU.Server.MembersEdit:ClearImported(); end },
+							LootReserveHoU:MakeMenuSeparator(),
 							{ text = "Close" },
 						};
-						LootReserve:OpenMenu(menu, self.Menu, self);
+						LootReserveHoU:OpenMenu(menu, self.Menu, self);
 					</OnClick>
 				</Scripts>
 			</Button>
-			<ScrollFrame parentKey="Scroll" inherits="LootReserveScrollTemplate">
+			<ScrollFrame parentKey="Scroll" inherits="LootReserveHoUScrollTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Header" relativePoint="BOTTOMLEFT" y="-1" />
 					<Anchor point="TOPRIGHT" relativeKey="$parent.Header" relativePoint="BOTTOMRIGHT" x="-16" y="-1" />
@@ -515,11 +515,11 @@
 		</Layers>
 		<Scripts>
 			<OnLoad>
-				LootReserve.Server.MembersEdit:OnWindowLoad(self);
+				LootReserveHoU.Server.MembersEdit:OnWindowLoad(self);
 			</OnLoad>
 			<OnShow>
 				PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
-				LootReserve.Server.MembersEdit:UpdateMembersList();
+				LootReserveHoU.Server.MembersEdit:UpdateMembersList();
 			</OnShow>
 			<OnHide>
 				CloseMenus();

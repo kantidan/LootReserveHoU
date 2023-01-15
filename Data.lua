@@ -20,7 +20,7 @@ local hidden = { Hidden = true };
 local factionAlliance = { Faction = "Alliance" };
 local factionHorde    = { Faction = "Horde" };
 
-LootReserve.Data =
+LootReserveHoU.Data =
 {
     Categories =
     {
@@ -29,7 +29,7 @@ LootReserve.Data =
             {
                 { Name = "My Reserves", Reserves = "my" },
                 { Name = "All Reserves", Reserves = "all" },
-                { Name = "|TInterface\\AddOns\\LootReserve\\Assets\\Textures\\FavoriteWhite:16:16:0:-1:32:32:7:25:2:20|t Favorites", Favorites = true },
+                { Name = "|TInterface\\AddOns\\LootReserveHoU\\Assets\\Textures\\FavoriteWhite:16:16:0:-1:32:32:7:25:2:20|t Favorites", Favorites = true },
                 { Name = "|TInterface\\Common\\UI-SearchBox-Icon:16:16:2:-2|t Search Results", Search = true },
             },
         },
@@ -4670,30 +4670,30 @@ LootReserve.Data =
 
 
 local function HideItem(itemID)
-    if LootReserve.Data.ItemConditions[itemID] then
-        LootReserve.Data.ItemConditions[itemID] = LootReserve:Deepcopy(LootReserve.Data.ItemConditions[itemID]);
-        LootReserve.Data.ItemConditions[itemID]["Hidden"] = true;
+    if LootReserveHoU.Data.ItemConditions[itemID] then
+        LootReserveHoU.Data.ItemConditions[itemID] = LootReserveHoU:Deepcopy(LootReserveHoU.Data.ItemConditions[itemID]);
+        LootReserveHoU.Data.ItemConditions[itemID]["Hidden"] = true;
     else
-        LootReserve.Data.ItemConditions[itemID] = hidden;
+        LootReserveHoU.Data.ItemConditions[itemID] = hidden;
     end
 end
 
 local function ApplyClassRestriction(itemID, classMask)
-    if LootReserve.Data.ItemConditions[itemID] then
-        LootReserve.Data.ItemConditions[itemID] = LootReserve:Deepcopy(LootReserve.Data.ItemConditions[itemID]);
-        LootReserve.Data.ItemConditions[itemID]["ClassMask"] = classMask;
+    if LootReserveHoU.Data.ItemConditions[itemID] then
+        LootReserveHoU.Data.ItemConditions[itemID] = LootReserveHoU:Deepcopy(LootReserveHoU.Data.ItemConditions[itemID]);
+        LootReserveHoU.Data.ItemConditions[itemID]["ClassMask"] = classMask;
     else
-        LootReserve.Data.ItemConditions[itemID] = { ClassMask = classMask };
+        LootReserveHoU.Data.ItemConditions[itemID] = { ClassMask = classMask };
     end
 end
 
 -- Faction restrictions on equipment should only apply in classic
 local function ApplyFactionRestriction(itemID, faction)
-    if LootReserve.Data.ItemConditions[itemID] then
-        LootReserve.Data.ItemConditions[itemID] = LootReserve:Deepcopy(LootReserve.Data.ItemConditions[itemID]);
-        LootReserve.Data.ItemConditions[itemID]["Faction"] = faction;
+    if LootReserveHoU.Data.ItemConditions[itemID] then
+        LootReserveHoU.Data.ItemConditions[itemID] = LootReserveHoU:Deepcopy(LootReserveHoU.Data.ItemConditions[itemID]);
+        LootReserveHoU.Data.ItemConditions[itemID]["Faction"] = faction;
     else
-        LootReserve.Data.ItemConditions[itemID] = faction == "Alliance" and factionAlliance or factionHorde;
+        LootReserveHoU.Data.ItemConditions[itemID] = faction == "Alliance" and factionAlliance or factionHorde;
     end
 end
 
@@ -4888,7 +4888,7 @@ ApplyFactionRestriction(32385, "Alliance");
 ApplyFactionRestriction(32386, "Horde");
 
 -- Classic only restrictions
-if LootReserve:GetCurrentExpansion() == 0 then
+if LootReserveHoU:GetCurrentExpansion() == 0 then
     -- T1
     ApplyFactionRestriction(16837, "Horde");
     ApplyFactionRestriction(16838, "Horde");
@@ -5469,14 +5469,14 @@ local tokenMap = {
 };
 
 for token, rewards in pairs(tokenMap) do
-    LootReserve.Data.TokenMap.Rewards[token] = rewards;
+    LootReserveHoU.Data.TokenMap.Rewards[token] = rewards;
     for _, reward in ipairs(rewards) do
-        LootReserve.Data.TokenMap.Tokens[reward] = token;
+        LootReserveHoU.Data.TokenMap.Tokens[reward] = token;
     end
 end
 
 
-function LootReserve.Data:IsItemInCategories(itemID, categories)
+function LootReserveHoU.Data:IsItemInCategories(itemID, categories)
     for _, category in ipairs(categories) do
         if itemID == 0 or category <= 0 then return false; end
 
@@ -5497,7 +5497,7 @@ function LootReserve.Data:IsItemInCategories(itemID, categories)
     return false;
 end
 
-function LootReserve.Data:GetItemCategories(itemID)
+function LootReserveHoU.Data:GetItemCategories(itemID)
     local categories = { };
     for category in pairs(self.Categories) do
         if self:IsItemInCategories(itemID, {category}) then
@@ -5507,33 +5507,33 @@ function LootReserve.Data:GetItemCategories(itemID)
     return categories;
 end
 
-function LootReserve.Data:IsCategoryVisible(category)
-    return not category.Expansion or category.Expansion <= LootReserve:GetCurrentExpansion();
+function LootReserveHoU.Data:IsCategoryVisible(category)
+    return not category.Expansion or category.Expansion <= LootReserveHoU:GetCurrentExpansion();
 end
 
-function LootReserve.Data.CategorySorter(a, b, aID, bID)
+function LootReserveHoU.Data.CategorySorter(a, b, aID, bID)
     if aID > 0 and bID > 0 and a.Expansion ~= b.Expansion then
         return a.Expansion > b.Expansion;
     end
     return aID < bID;
 end
 
-function LootReserve.Data:GetQuestStarted(itemID)
+function LootReserveHoU.Data:GetQuestStarted(itemID)
     return self.QuestStarters[itemID];
 end
-function LootReserve.Data:GetQuestDropRequirement(itemID)
+function LootReserveHoU.Data:GetQuestDropRequirement(itemID)
     return self.QuestDrops[itemID];
 end
 
-function LootReserve.Data:GetToken(itemID)
+function LootReserveHoU.Data:GetToken(itemID)
     return self.TokenMap.Tokens[itemID];
 end
-function LootReserve.Data:GetTokenRewards(itemID)
+function LootReserveHoU.Data:GetTokenRewards(itemID)
     return self.TokenMap.Rewards[itemID];
 end
-function LootReserve.Data:IsToken(itemID)
+function LootReserveHoU.Data:IsToken(itemID)
     return self:GetTokenRewards(itemID) ~= nil;
 end
-function LootReserve.Data:IsTokenReward(itemID)
+function LootReserveHoU.Data:IsTokenReward(itemID)
     return self:GetToken(itemID) ~= nil;
 end

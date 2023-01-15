@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for LootReserve
+about: Suggest an idea for LootReserveHoU
 title: ''
 labels: enhancement
 assignees: ''

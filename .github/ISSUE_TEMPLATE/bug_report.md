@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help LootReserve improve
+about: Create a report to help LootReserveHoU improve
 title: ''
 labels: bug
 assignees: ''

@@ -1,5 +1,5 @@
-LootReserve = LootReserve or { };
-LootReserve.ItemSearch =
+LootReserveHoU = LootReserveHoU or { };
+LootReserveHoU.ItemSearch =
 {
     BatchCap        = 100, -- max number of items to query in between UI updates
     BatchFrames     = 10, -- UI updates should happen in about this many frames (plus the delay of ITEM_DATA_LOAD_RESULT)
@@ -52,12 +52,12 @@ LootReserve.ItemSearch =
     },
 };
 
-function LootReserve.ItemSearch:Load()
+function LootReserveHoU.ItemSearch:Load()
     if self.FullCache then return end
     
     local itemsToCache = { };
     local alreadyAddedIDs = { [0] = true };
-    for id, category in pairs(LootReserve.Data.Categories) do
+    for id, category in pairs(LootReserveHoU.Data.Categories) do
         for _, child in ipairs(category.Children or { }) do
             for _, itemID in ipairs(child.Loot or { }) do
                 if not alreadyAddedIDs[itemID] then
@@ -68,7 +68,7 @@ function LootReserve.ItemSearch:Load()
         end
     end
     for i = #itemsToCache, 1, -1 do
-        for _, rewardID in ipairs(LootReserve.Data:GetTokenRewards(itemID) or { }) do
+        for _, rewardID in ipairs(LootReserveHoU.Data:GetTokenRewards(itemID) or { }) do
             if not alreadyAddedIDs[rewardID] then
                 table.insert(itemsToCache, rewardID);
                 alreadyAddedIDs[rewardID] = true;
@@ -84,5 +84,5 @@ function LootReserve.ItemSearch:Load()
         end
     end
     
-    self.FullCache = LootReserve.ItemCache:Cache(itemsToCache):SetSpeed(self.DefaultSpeed);
+    self.FullCache = LootReserveHoU.ItemCache:Cache(itemsToCache):SetSpeed(self.DefaultSpeed);
 end

@@ -1,10 +1,10 @@
-function LootReserve.Server.MembersEdit:UpdateMembersList()
-    LootReserveServerButtonMembersEdit:SetGlow(not LootReserve.Server.CurrentSession and next(LootReserve.Server.NewSessionSettings.ImportedMembers));
+function LootReserveHoU.Server.MembersEdit:UpdateMembersList()
+    LootReserveHoUServerButtonMembersEdit:SetGlow(not LootReserveHoU.Server.CurrentSession and next(LootReserveHoU.Server.NewSessionSettings.ImportedMembers));
 
     if not self.Window:IsShown() then return; end
 
-    self.Window.Header.Name:SetWidth(LootReserve:IsCrossRealm() and 300 or 200);
-    self.Window:SetMinResize(LootReserve:IsCrossRealm() and 650 or 550, 150);
+    self.Window.Header.Name:SetWidth(LootReserveHoU:IsCrossRealm() and 300 or 200);
+    self.Window:SetMinResize(LootReserveHoU:IsCrossRealm() and 650 or 550, 150);
 
     local list = self.Window.Scroll.Container;
     list.Frames = list.Frames or { };
@@ -17,16 +17,16 @@ function LootReserve.Server.MembersEdit:UpdateMembersList()
 
     local missing = { };
 
-    self.Window.NoSession:SetShown(not LootReserve.Server.CurrentSession and not next(LootReserve.Server.NewSessionSettings.ImportedMembers));
-    self.Window.Header.LockedIcon:SetShown(LootReserve.Server.CurrentSession);
-    self.Window.ImportExportButton:SetText(LootReserve.Server.CurrentSession and "Export" or "Import/Export");
-    self.Window.ImportExportButton:SetWidth(LootReserve.Server.CurrentSession and 60 or 90);
+    self.Window.NoSession:SetShown(not LootReserveHoU.Server.CurrentSession and not next(LootReserveHoU.Server.NewSessionSettings.ImportedMembers));
+    self.Window.Header.LockedIcon:SetShown(LootReserveHoU.Server.CurrentSession);
+    self.Window.ImportExportButton:SetText(LootReserveHoU.Server.CurrentSession and "Export" or "Import/Export");
+    self.Window.ImportExportButton:SetWidth(LootReserveHoU.Server.CurrentSession and 60 or 90);
 
     local function createFrame(player, member)
         list.LastIndex = list.LastIndex + 1;
         local frame = list.Frames[list.LastIndex];
         while not frame do
-            frame = CreateFrame("Frame", nil, list, "LootReserveServerMembersEditMemberTemplate");
+            frame = CreateFrame("Frame", nil, list, "LootReserveHoUServerMembersEditMemberTemplate");
 
             if #list.Frames == 0 then
                 frame:SetPoint("TOPLEFT", list, "TOPLEFT", 0, -4);
@@ -44,9 +44,9 @@ function LootReserve.Server.MembersEdit:UpdateMembersList()
         frame:Show();
 
         frame.Alt:SetShown(list.LastIndex % 2 == 0);
-        frame.NameFrame:SetText(format("%s%s%s", LootReserve:ColoredPlayer(player), not LootReserve.Server.CurrentSession and "|cFF808080 (imported)|r" or "", LootReserve:IsPlayerOnline(player) == nil and "|cFF808080 (not in raid)|r" or LootReserve:IsPlayerOnline(player) == false and "|cFF808080 (offline)|r" or ""));
+        frame.NameFrame:SetText(format("%s%s%s", LootReserveHoU:ColoredPlayer(player), not LootReserveHoU.Server.CurrentSession and "|cFF808080 (imported)|r" or "", LootReserveHoU:IsPlayerOnline(player) == nil and "|cFF808080 (not in raid)|r" or LootReserveHoU:IsPlayerOnline(player) == false and "|cFF808080 (offline)|r" or ""));
 
-        local won = LootReserve.Server.CurrentSession and LootReserve.Server.CurrentSession.Members[player] and LootReserve.Server.CurrentSession.Members[player].WonRolls;
+        local won = LootReserveHoU.Server.CurrentSession and LootReserveHoU.Server.CurrentSession.Members[player] and LootReserveHoU.Server.CurrentSession.Members[player].WonRolls;
         local wonMaxQuality = 0;
         if won then
             for _, roll in ipairs(won) do
@@ -59,20 +59,20 @@ function LootReserve.Server.MembersEdit:UpdateMembersList()
         end
         frame.WonRolls:SetText(format("|c%s%d|r", wonMaxQuality > 0 and select(4, GetItemQualityColor(wonMaxQuality)) or "FF404040", won and #won or 0));
 
-        if LootReserve.Server.CurrentSession then
+        if LootReserveHoU.Server.CurrentSession then
             frame.CheckButtonLocked:Show();
             frame.CheckButtonLocked:SetChecked(member.Locked);
-            frame.CheckButtonLocked:SetEnabled(LootReserve.Server.CurrentSession.Settings.Lock);
-            frame.CheckButtonLocked:SetAlpha(LootReserve.Server.CurrentSession.Settings.Lock and 1 or 0.25);
-            frame.ButtonDeltaIncrement:SetShown(LootReserve.Server.CurrentSession.Settings.MaxReservesPerPlayer + member.ReservesDelta < LootReserve.Constants.MAX_MULTIRESERVES);
-            frame.ButtonDeltaDecrement:SetShown(LootReserve.Server.CurrentSession.Settings.MaxReservesPerPlayer + member.ReservesDelta > 0);
+            frame.CheckButtonLocked:SetEnabled(LootReserveHoU.Server.CurrentSession.Settings.Lock);
+            frame.CheckButtonLocked:SetAlpha(LootReserveHoU.Server.CurrentSession.Settings.Lock and 1 or 0.25);
+            frame.ButtonDeltaIncrement:SetShown(LootReserveHoU.Server.CurrentSession.Settings.MaxReservesPerPlayer + member.ReservesDelta < LootReserveHoU.Constants.MAX_MULTIRESERVES);
+            frame.ButtonDeltaDecrement:SetShown(LootReserveHoU.Server.CurrentSession.Settings.MaxReservesPerPlayer + member.ReservesDelta > 0);
         else
             frame.CheckButtonLocked:Hide();
             frame.ButtonDeltaIncrement:Hide();
             frame.ButtonDeltaDecrement:Hide();
         end
 
-        local maxCount = (LootReserve.Server.CurrentSession and LootReserve.Server.CurrentSession.Settings.MaxReservesPerPlayer or LootReserve.Server.NewSessionSettings.MaxReservesPerPlayer) + member.ReservesDelta;
+        local maxCount = (LootReserveHoU.Server.CurrentSession and LootReserveHoU.Server.CurrentSession.Settings.MaxReservesPerPlayer or LootReserveHoU.Server.NewSessionSettings.MaxReservesPerPlayer) + member.ReservesDelta;
         local count = member.ReservesLeft and (maxCount - member.ReservesLeft) or #member.ReservedItems;
         frame.Count:SetText(format("|cFF%s%d/%d|r", (count >= maxCount or member.OptedOut) and "00FF00" or count > 0 and "FFD200" or "FF0000", count, maxCount));
 
@@ -88,7 +88,7 @@ function LootReserve.Server.MembersEdit:UpdateMembersList()
             reservedItems[itemID] = reservedItems[itemID] + 1;
         end
         for itemID, count in pairs(reservedItems) do
-            local item = LootReserve.ItemCache:Item(itemID);
+            local item = LootReserveHoU.ItemCache:Item(itemID);
             table.insert(itemOrder, item);
             if not item:IsCached() then
                 table.insert(missing, item);
@@ -97,12 +97,12 @@ function LootReserve.Server.MembersEdit:UpdateMembersList()
         
         local last = 0;
         local lastCount = 0;
-        for _, item in LootReserve:Ordered(itemOrder, function(a, b) return a < b end) do
+        for _, item in LootReserveHoU:Ordered(itemOrder, function(a, b) return a < b end) do
             local count = reservedItems[item:GetID()];
             last = last + 1;
             local button = frame.ReservesFrame.Items[last];
             while not button do
-                button = CreateFrame("Button", nil, frame.ReservesFrame, "LootReserveServerMembersEditItemTemplate");
+                button = CreateFrame("Button", nil, frame.ReservesFrame, "LootReserveHoUServerMembersEditItemTemplate");
                 table.insert(frame.ReservesFrame.Items, button);
                 button = frame.ReservesFrame.Items[last];
             end
@@ -143,7 +143,7 @@ function LootReserve.Server.MembersEdit:UpdateMembersList()
         end
     end
 
-    for player, member in LootReserve:Ordered(LootReserve.Server.CurrentSession and LootReserve.Server.CurrentSession.Members or LootReserve.Server.NewSessionSettings.ImportedMembers, function(aMember, bMember, aPlayer, bPlayer) return aPlayer < bPlayer; end) do
+    for player, member in LootReserveHoU:Ordered(LootReserveHoU.Server.CurrentSession and LootReserveHoU.Server.CurrentSession.Members or LootReserveHoU.Server.NewSessionSettings.ImportedMembers, function(aMember, bMember, aPlayer, bPlayer) return aPlayer < bPlayer; end) do
         createFrame(player, member);
     end
 
@@ -155,24 +155,24 @@ function LootReserve.Server.MembersEdit:UpdateMembersList()
 
     if #missing > 0 then
         if not self.PendingMembersEditUpdate or self.PendingMembersEditUpdate:IsComplete() then
-            self.PendingMembersEditUpdate = LootReserve.ItemCache:OnCache(missing, function()
+            self.PendingMembersEditUpdate = LootReserveHoU.ItemCache:OnCache(missing, function()
                 self:UpdateMembersList();
             end);
         end
     end
 end
 
-function LootReserve.Server.MembersEdit:ClearImported()
-    if LootReserve.Server.CurrentSession then return; end
+function LootReserveHoU.Server.MembersEdit:ClearImported()
+    if LootReserveHoU.Server.CurrentSession then return; end
 
-    table.wipe(LootReserve.Server.NewSessionSettings.ImportedMembers);
+    table.wipe(LootReserveHoU.Server.NewSessionSettings.ImportedMembers);
     self:UpdateMembersList();
 end
 
-function LootReserve.Server.MembersEdit:OnWindowLoad(window)
+function LootReserveHoU.Server.MembersEdit:OnWindowLoad(window)
     self.Window = window;
     self.Window.TopLeftCorner:SetSize(32, 32); -- Blizzard UI bug?
-    self.Window.TitleText:SetText("LootReserve Host - Players");
-    self.Window:SetMinResize(LootReserve:IsCrossRealm() and 650 or 550, 150);
+    self.Window.TitleText:SetText("LootReserveHoU Host - Players");
+    self.Window:SetMinResize(LootReserveHoU:IsCrossRealm() and 650 or 550, 150);
     self:UpdateMembersList();
 end

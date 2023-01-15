@@ -1,6 +1,6 @@
 <Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="ServerLootEditWindow.lua" />
-	<Frame name="LootReserveLootEditListTemplate" virtual="true" enableMouse="true" inherits="LootReserveBackdropTemplate">
+	<Frame name="LootReserveHoULootEditListTemplate" virtual="true" enableMouse="true" inherits="LootReserveHoUBackdropTemplate">
 		<KeyValues>
 			<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16_5555" type="global" />
 			<KeyValue key="backdropBorderColor" value="NORMAL_FONT_COLOR" type="global" />
@@ -27,13 +27,13 @@
 							<OnLoad inherit="prepend">
 								self.Update = function(self)
 									local itemID = self:GetParent():GetParent().Item;
-									local tokenID = LootReserve.Data:GetToken(itemID);
-									local conditions = LootReserve.ItemConditions:Get(tokenID or itemID, true);
+									local tokenID = LootReserveHoU.Data:GetToken(itemID);
+									local conditions = LootReserveHoU.ItemConditions:Get(tokenID or itemID, true);
 									if conditions and conditions.ClassMask then
 										local text = "";
-										for i = 1, LootReserve:GetNumClasses() do
-											local name, file, id = LootReserve:GetClassInfo(i);
-											if id and LootReserve.ItemConditions:TestClassMask(conditions.ClassMask, id) then
+										for i = 1, LootReserveHoU:GetNumClasses() do
+											local name, file, id = LootReserveHoU:GetClassInfo(i);
+											if id and LootReserveHoU.ItemConditions:TestClassMask(conditions.ClassMask, id) then
 												text = text .. (#text > 0 and ", " or "") .. format("|c%s%s|r", RAID_CLASS_COLORS[file].colorStr, name);
 											end
 										end
@@ -52,37 +52,37 @@
 								self:Update();
 							</OnLoad>
 							<OnClick>
-								if #LootReserve.Server.NewSessionSettings.LootCategories ~= 1 then
-									LootReserve:ShowError("Cannot edit Loot List while multiple raids are selected.|n|nCombined raids inherit their Loot List from each selected raid.|n|nTo modify loot for combined raids, select and edit each raid individually before combining.");
+								if #LootReserveHoU.Server.NewSessionSettings.LootCategories ~= 1 then
+									LootReserveHoU:ShowError("Cannot edit Loot List while multiple raids are selected.|n|nCombined raids inherit their Loot List from each selected raid.|n|nTo modify loot for combined raids, select and edit each raid individually before combining.");
 									return;
 								end
 								local itemID = self:GetParent():GetParent().Item;
-								local tokenID = LootReserve.Data:GetToken(itemID);
-								local conditions = LootReserve.ItemConditions:Get(tokenID or itemID, true);
+								local tokenID = LootReserveHoU.Data:GetToken(itemID);
+								local conditions = LootReserveHoU.ItemConditions:Get(tokenID or itemID, true);
 								local menu =
 								{
-									LootReserve:MakeMenuSeparator(),
+									LootReserveHoU:MakeMenuSeparator(),
 									{ text = "Close" },
 								};
 								local index = 0;
-								for i = 1, LootReserve:GetNumClasses() do
-									local name, file, id = LootReserve:GetClassInfo(i);
+								for i = 1, LootReserveHoU:GetNumClasses() do
+									local name, file, id = LootReserveHoU:GetClassInfo(i);
 									if name and file and id then
 										index = index + 1;
 										table.insert(menu, index,
 										{
 											text = format("|c%s%s|r", RAID_CLASS_COLORS[file].colorStr, name),
-											checked = conditions and LootReserve.ItemConditions:TestClassMask(conditions.ClassMask, id) or false,
+											checked = conditions and LootReserveHoU.ItemConditions:TestClassMask(conditions.ClassMask, id) or false,
 											arg1 = id,
 											func = function(_, id, _, checked)
-												local conditions = LootReserve.ItemConditions:Make(tokenID or itemID, true);
+												local conditions = LootReserveHoU.ItemConditions:Make(tokenID or itemID, true);
 												conditions.ClassMask = checked and bit.bor(conditions.ClassMask or 0, bit.lshift(1, id - 1)) or bit.band(conditions.ClassMask or 0, bit.bnot(bit.lshift(1, id - 1)));
-												LootReserve.ItemConditions:Save(tokenID or itemID, true);
+												LootReserveHoU.ItemConditions:Save(tokenID or itemID, true);
 											end
 										});
 									end
 								end
-								LootReserve:OpenMenu(menu, self:GetParent().ClassMaskMenu, self);
+								LootReserveHoU:OpenMenu(menu, self:GetParent().ClassMaskMenu, self);
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -101,8 +101,8 @@
 							<OnLoad>
 								self.Update = function(self)
 									local itemID = self:GetParent():GetParent().Item;
-									local tokenID = LootReserve.Data:GetToken(itemID);
-									local conditions = LootReserve.ItemConditions:Get(tokenID or itemID, true);
+									local tokenID = LootReserveHoU.Data:GetToken(itemID);
+									local conditions = LootReserveHoU.ItemConditions:Get(tokenID or itemID, true);
 									self.shown = false;
 									self.disabled = false;
 									if not conditions then
@@ -112,7 +112,7 @@
 									elseif conditions.Hidden then
 										self:SetText("|cFFFF0000Hidden|r");
 										self.shown = true;
-									elseif conditions.Faction and not LootReserve.ItemConditions:TestFaction(conditions.Faction) then
+									elseif conditions.Faction and not LootReserveHoU.ItemConditions:TestFaction(conditions.Faction) then
 										self:SetText(format("|cFFFF0000%s-only|r", conditions.Faction));
 										self.shown = true;
 										self.disabled = true;
@@ -129,18 +129,18 @@
 								self:Update();
 							</OnLoad>
 							<OnClick>
-								if #LootReserve.Server.NewSessionSettings.LootCategories ~= 1 then
-									LootReserve:ShowError("Cannot edit Loot List while multiple raids are selected.|n|nCombined raids inherit their Loot List from each selected raid.|n|nTo modify loot for combined raids, select and edit each raid individually before combining.");
+								if #LootReserveHoU.Server.NewSessionSettings.LootCategories ~= 1 then
+									LootReserveHoU:ShowError("Cannot edit Loot List while multiple raids are selected.|n|nCombined raids inherit their Loot List from each selected raid.|n|nTo modify loot for combined raids, select and edit each raid individually before combining.");
 									return;
 								end
 								local itemID = self:GetParent():GetParent().Item;
-								local tokenID = LootReserve.Data:GetToken(itemID);
-								local conditions = LootReserve.ItemConditions:Make(tokenID or itemID, true);
+								local tokenID = LootReserveHoU.Data:GetToken(itemID);
+								local conditions = LootReserveHoU.ItemConditions:Make(tokenID or itemID, true);
 								if conditions.Custom then
-									LootReserve.ItemConditions:Delete(tokenID or itemID, true);
+									LootReserveHoU.ItemConditions:Delete(tokenID or itemID, true);
 								else
 									conditions.Hidden = not conditions.Hidden;
-									LootReserve.ItemConditions:Save(tokenID or itemID, true);
+									LootReserveHoU.ItemConditions:Save(tokenID or itemID, true);
 								end
 							</OnClick>
 						</Scripts>
@@ -168,20 +168,20 @@
 								</Anchors>
 								<Scripts>
 									<OnClick>
-										if #LootReserve.Server.NewSessionSettings.LootCategories ~= 1 then
-											LootReserve:ShowError("Cannot edit Loot List while multiple raids are selected.|n|nCombined raids inherit their Loot List from each selected raid.|n|nTo modify loot for combined raids, select and edit each raid individually before combining.");
+										if #LootReserveHoU.Server.NewSessionSettings.LootCategories ~= 1 then
+											LootReserveHoU:ShowError("Cannot edit Loot List while multiple raids are selected.|n|nCombined raids inherit their Loot List from each selected raid.|n|nTo modify loot for combined raids, select and edit each raid individually before combining.");
 											return;
 										end
 										self:GetParent().EditBox:ClearFocus();
 										local itemID = self:GetParent():GetParent():GetParent().Item;
-										local tokenID = LootReserve.Data:GetToken(itemID);
-										local conditions = LootReserve.ItemConditions:Make(tokenID or itemID, true);
+										local tokenID = LootReserveHoU.Data:GetToken(itemID);
+										local conditions = LootReserveHoU.ItemConditions:Make(tokenID or itemID, true);
 										if conditions.Limit and conditions.Limit > 1 then
 											conditions.Limit = conditions.Limit - 1;
 										else
 											conditions.Limit = nil;
 										end
-										LootReserve.ItemConditions:Save(tokenID or itemID, true);
+										LootReserveHoU.ItemConditions:Save(tokenID or itemID, true);
 									</OnClick>
 								</Scripts>
 							</Button>
@@ -192,16 +192,16 @@
 								</Anchors>
 								<Scripts>
 									<OnClick>
-										if #LootReserve.Server.NewSessionSettings.LootCategories ~= 1 then
-											LootReserve:ShowError("Cannot edit Loot List while multiple raids are selected.|n|nCombined raids inherit their Loot List from each selected raid.|n|nTo modify loot for combined raids, select and edit each raid individually before combining.");
+										if #LootReserveHoU.Server.NewSessionSettings.LootCategories ~= 1 then
+											LootReserveHoU:ShowError("Cannot edit Loot List while multiple raids are selected.|n|nCombined raids inherit their Loot List from each selected raid.|n|nTo modify loot for combined raids, select and edit each raid individually before combining.");
 											return;
 										end
 										self:GetParent().EditBox:ClearFocus();
 										local itemID = self:GetParent():GetParent():GetParent().Item;
-										local tokenID = LootReserve.Data:GetToken(itemID);
-										local conditions = LootReserve.ItemConditions:Make(tokenID or itemID, true);
-										conditions.Limit = math.min(LootReserve.Constants.MAX_RESERVES_PER_ITEM, (conditions.Limit or 0) + 1);
-										LootReserve.ItemConditions:Save(tokenID or itemID, true);
+										local tokenID = LootReserveHoU.Data:GetToken(itemID);
+										local conditions = LootReserveHoU.ItemConditions:Make(tokenID or itemID, true);
+										conditions.Limit = math.min(LootReserveHoU.Constants.MAX_RESERVES_PER_ITEM, (conditions.Limit or 0) + 1);
+										LootReserveHoU.ItemConditions:Save(tokenID or itemID, true);
 									</OnClick>
 								</Scripts>
 							</Button>
@@ -213,9 +213,9 @@
 								</Anchors>
 								<Scripts>
 									<OnTextChanged>
-										if #LootReserve.Server.NewSessionSettings.LootCategories ~= 1 then
-											local tokenID = LootReserve.Data:GetToken(itemID);
-											local conditions = LootReserve.ItemConditions:Get(tokenID or itemID, true);
+										if #LootReserveHoU.Server.NewSessionSettings.LootCategories ~= 1 then
+											local tokenID = LootReserveHoU.Data:GetToken(itemID);
+											local conditions = LootReserveHoU.ItemConditions:Get(tokenID or itemID, true);
 											local text = conditions and conditions.Limit and conditions.Limit > 0 and tostring(conditions.Limit) or "";
 											if self:GetText() ~= text then
 												self:SetText(text);
@@ -223,18 +223,18 @@
 											return;
 										end
 										local itemID = self:GetParent():GetParent():GetParent().Item;
-										local tokenID = LootReserve.Data:GetToken(itemID);
-										local conditions = LootReserve.ItemConditions:Make(tokenID or itemID, true);
-										conditions.Limit = tonumber(self:GetText()) and math.min(LootReserve.Constants.MAX_RESERVES_PER_ITEM, tonumber(self:GetText()));
-										LootReserve.ItemConditions:Save(tokenID or itemID, true);
+										local tokenID = LootReserveHoU.Data:GetToken(itemID);
+										local conditions = LootReserveHoU.ItemConditions:Make(tokenID or itemID, true);
+										conditions.Limit = tonumber(self:GetText()) and math.min(LootReserveHoU.Constants.MAX_RESERVES_PER_ITEM, tonumber(self:GetText()));
+										LootReserveHoU.ItemConditions:Save(tokenID or itemID, true);
 									</OnTextChanged>
 									<OnEnterPressed function="EditBox_ClearFocus" />
 									<OnEditFocusGained inherit="prepend">
-										LootReserve.Server.LootEdit.FocusedEditBox = self;
+										LootReserveHoU.Server.LootEdit.FocusedEditBox = self;
 									</OnEditFocusGained>
 									<OnEditFocusLost inherit="prepend">
-										if LootReserve.Server.LootEdit.FocusedEditBox == self then
-											LootReserve.Server.LootEdit.FocusedEditBox = nil;
+										if LootReserveHoU.Server.LootEdit.FocusedEditBox == self then
+											LootReserveHoU.Server.LootEdit.FocusedEditBox = nil;
 										end
 									</OnEditFocusLost>
 								</Scripts>
@@ -247,11 +247,11 @@
 								self.EditBox.Left:SetPoint("LEFT", self.EditBox, "LEFT", 0, 0);
 								self.Update = function(self)
 									local itemID = self:GetParent():GetParent().Item;
-									local tokenID = LootReserve.Data:GetToken(itemID);
-									local conditions = LootReserve.ItemConditions:Get(tokenID or itemID, true);
+									local tokenID = LootReserveHoU.Data:GetToken(itemID);
+									local conditions = LootReserveHoU.ItemConditions:Get(tokenID or itemID, true);
 
 									self.Decrement:SetEnabled(conditions and conditions.Limit and conditions.Limit > 0);
-									self.Increment:SetEnabled(not conditions or not conditions.Limit or conditions.Limit &lt; LootReserve.Constants.MAX_RESERVES_PER_ITEM);
+									self.Increment:SetEnabled(not conditions or not conditions.Limit or conditions.Limit &lt; LootReserveHoU.Constants.MAX_RESERVES_PER_ITEM);
 									local text = conditions and conditions.Limit and conditions.Limit > 0 and tostring(conditions.Limit) or "";
 									if self.EditBox:GetText() ~= text then
 										self.EditBox:SetText(text);
@@ -285,8 +285,8 @@
 							<OnLoad>
 								self.Update = function(self)
 									local itemID = self:GetParent():GetParent().Item;
-									local tokenID = LootReserve.Data:GetToken(itemID);
-									local conditions = LootReserve.ItemConditions:Get(tokenID or itemID, true);
+									local tokenID = LootReserveHoU.Data:GetToken(itemID);
+									local conditions = LootReserveHoU.ItemConditions:Get(tokenID or itemID, true);
 									if conditions and conditions.Limit and conditions.Limit > 0 and not conditions.Hidden then
 										self.Label:SetText(format("Max %d", conditions.Limit));
 										self:SetWidth(self.Label:GetStringWidth());
@@ -314,7 +314,7 @@
 					</OnLoad>
 				</Scripts>
 			</Frame>
-			<Button parentKey="ItemFrame" inherits="LootReserveItemButtonTemplate">
+			<Button parentKey="ItemFrame" inherits="LootReserveHoUItemButtonTemplate">
 				<KeyValues>
 					<KeyValue key="tooltipRight" value="true" type="boolean" />
 				</KeyValues>
@@ -337,7 +337,7 @@
 				end
 			</OnLoad>
 			<OnUpdate>
-				local hovered = self:IsMouseOver() and self:GetParent():GetParent():IsMouseOver() and not UIDROPDOWNMENU_OPEN_MENU and not LootReserve.Server.LootEdit.FocusedEditBox
+				local hovered = self:IsMouseOver() and self:GetParent():GetParent():IsMouseOver() and not UIDROPDOWNMENU_OPEN_MENU and not LootReserveHoU.Server.LootEdit.FocusedEditBox
 				                or UIDROPDOWNMENU_OPEN_MENU == self.ConditionsFrame.ClassMaskMenu
 				                or self.ConditionsFrame.Limit.EditBox:HasFocus();
 				if self.hovered ~= hovered then
@@ -358,7 +358,7 @@
 			</OnUpdate>
 		</Scripts>
 	</Frame>
-	<Frame name="LootReserveLootEditRevertEditsFrame" virtual="true" enableMouse="true">
+	<Frame name="LootReserveHoULootEditRevertEditsFrame" virtual="true" enableMouse="true">
 		<Size y="44" />
 		<Frames>
 			<Button inherits="UIPanelButtonTemplate" text="Revert All Edits">
@@ -368,17 +368,17 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						if #LootReserve.Server.NewSessionSettings.LootCategories ~= 1 then
-							LootReserve:ShowError("Cannot edit Loot List while multiple raids are selected.|n|nCombined raids inherit their Loot List from each selected raid.|n|nTo modify loot for combined raids, select and edit each raid individually before combining.");
+						if #LootReserveHoU.Server.NewSessionSettings.LootCategories ~= 1 then
+							LootReserveHoU:ShowError("Cannot edit Loot List while multiple raids are selected.|n|nCombined raids inherit their Loot List from each selected raid.|n|nTo modify loot for combined raids, select and edit each raid individually before combining.");
 							return;
 						end
-						LootReserve.ItemConditions:Clear(true);
+						LootReserveHoU.ItemConditions:Clear(true);
 					</OnClick>
 				</Scripts>
 			</Button>
 		</Frames>
 	</Frame>
-	<Frame name="LootReserveLootEditAddCustomFrame" virtual="true" enableMouse="true">
+	<Frame name="LootReserveHoULootEditAddCustomFrame" virtual="true" enableMouse="true">
 		<Size y="44" />
 		<Frames>
 			<Button parentKey="ItemFrame">
@@ -466,20 +466,20 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								if #LootReserve.Server.NewSessionSettings.LootCategories ~= 1 then
-									LootReserve:ShowError("Cannot edit Loot List while multiple raids are selected.|n|nCombined raids inherit their Loot List from each selected raid.|n|nTo modify loot for combined raids, select and edit each raid individually before combining.");
+								if #LootReserveHoU.Server.NewSessionSettings.LootCategories ~= 1 then
+									LootReserveHoU:ShowError("Cannot edit Loot List while multiple raids are selected.|n|nCombined raids inherit their Loot List from each selected raid.|n|nTo modify loot for combined raids, select and edit each raid individually before combining.");
 									return;
 								end
 								local frame = self:GetParent():GetParent();
 								if frame.Item then
-									local tokenID = LootReserve.Data:GetToken(itemID);
+									local tokenID = LootReserveHoU.Data:GetToken(itemID);
 									local token;
 									if tokenID then
-										token = LootReserve.ItemCache:Item(tokenID);
+										token = LootReserveHoU.ItemCache:Item(tokenID);
 									end
-									local conditions = LootReserve.ItemConditions:Make(token or frame.Item, true);
+									local conditions = LootReserveHoU.ItemConditions:Make(token or frame.Item, true);
 									conditions.Custom = true;
-									LootReserve.ItemConditions:Save(token or frame.Item, true);
+									LootReserveHoU.ItemConditions:Save(token or frame.Item, true);
 									frame:SetItem(nil);
 								end
 							</OnClick>
@@ -539,12 +539,12 @@
 							CloseMenus();
 							return;
 						end
-						local text = LootReserve.ItemCache:FormatSearchText(editbox:GetText());
+						local text = LootReserveHoU.ItemCache:FormatSearchText(editbox:GetText());
 						local itemID = tonumber(text);
 						local menu = { };
 						local missing = { };
-						if itemID and LootReserve.ItemCache:DoesItemExistByID(itemID) then
-							local item = LootReserve.ItemCache:Item(itemID);
+						if itemID and LootReserveHoU.ItemCache:DoesItemExistByID(itemID) then
+							local item = LootReserveHoU.ItemCache:Item(itemID);
 							local name, link, texture;
 							if item:IsCached() then
 								name, link, texture = item:GetNameLinkTexture();
@@ -558,9 +558,9 @@
 								func = SelectItem,
 							});
 						elseif not itemID and #text >= 3 then
-							LootReserve.ItemSearch:Load();
-							if LootReserve.ItemSearch.FullCache:IsComplete() then
-								local results = LootReserve.ItemCache:Filter(function(item) return item:Matches(text) end);
+							LootReserveHoU.ItemSearch:Load();
+							if LootReserveHoU.ItemSearch.FullCache:IsComplete() then
+								local results = LootReserveHoU.ItemCache:Filter(function(item) return item:Matches(text) end);
 								for i, item in ipairs(results) do
 									if i > 10 then
 										table.insert(menu,
@@ -580,10 +580,10 @@
 									end
 								end
 							else
-								LootReserve.ItemSearch.FullCache:SetSpeed(LootReserve.ItemSearch.ZoomSpeed);
+								LootReserveHoU.ItemSearch.FullCache:SetSpeed(LootReserveHoU.ItemSearch.ZoomSpeed);
 								table.insert(menu,
 								{
-									text = format("Creating item name database... (%d%%)", LootReserve.ItemSearch.FullCache:GetProgress()),
+									text = format("Creating item name database... (%d%%)", LootReserveHoU.ItemSearch.FullCache:GetProgress()),
 									disabled = true,
 								});
 								table.insert(menu,
@@ -591,10 +591,10 @@
 									text = "Install/Update ItemCache to remember the item database between sessions",
 									disabled = true,
 								});
-								if not LootReserve.Server.PendingLootTextEdit then
-									LootReserve.Server.PendingLootTextEdit = true;
+								if not LootReserveHoU.Server.PendingLootTextEdit then
+									LootReserveHoU.Server.PendingLootTextEdit = true;
 									C_Timer.After(0.1, function()
-										LootReserve.Server.PendingLootTextEdit = false;
+										LootReserveHoU.Server.PendingLootTextEdit = false;
 										UpdateText();
 									end);
 								end
@@ -602,10 +602,10 @@
 						end
 						CloseMenus();
 						if #menu > 0 then
-							LootReserve:OpenMenu(menu, self.ItemFrame.Menu, self.ItemFrame.Scroll);
+							LootReserveHoU:OpenMenu(menu, self.ItemFrame.Menu, self.ItemFrame.Scroll);
 						end
 						if #missing > 0 then
-							LootReserve.ItemCache:OnCache(missing, UpdateText);
+							LootReserveHoU.ItemCache:OnCache(missing, UpdateText);
 						end
 					end
 					UpdateText();
@@ -614,7 +614,7 @@
 					if itemID then
 						self.Item = itemID;
 
-						local item = LootReserve.ItemCache:Item(itemID);
+						local item = LootReserveHoU.ItemCache:Item(itemID);
 						if not item:IsCached() then
 							item:OnCache(function()
 								if self.Item == itemID then
@@ -627,8 +627,8 @@
 						self.Link = link;
 
 						local reservers = 0;
-						if LootReserve.Server.CurrentSession then
-							local reserve = LootReserve.Server.CurrentSession.ItemReserves[itemID];
+						if LootReserveHoU.Server.CurrentSession then
+							local reserve = LootReserveHoU.Server.CurrentSession.ItemReserves[itemID];
 							reservers = reserve and #reserve.Players or 0;
 						end
 
@@ -656,14 +656,14 @@
 			</OnLoad>
 		</Scripts>
 	</Frame>
-	<Frame name="LootReserveServerLootEditWindow" parent="UIParent" inherits="BasicFrameTemplateWithInset" toplevel="true" movable="true" resizable="true" enableMouse="true" clampedToScreen="true" hidden="true">
+	<Frame name="LootReserveHoUServerLootEditWindow" parent="UIParent" inherits="BasicFrameTemplateWithInset" toplevel="true" movable="true" resizable="true" enableMouse="true" clampedToScreen="true" hidden="true">
 		<Size x="650" y="450" />
 		<Anchors>
 			<Anchor point="CENTER" />
 		</Anchors>
 		<Frames>
-			<Button inherits="LootReserveCommonFrameMovingHeaderTemplate" />
-			<Button inherits="LootReserveCommonFrameSizeGrabberTemplate" />
+			<Button inherits="LootReserveHoUCommonFrameMovingHeaderTemplate" />
+			<Button inherits="LootReserveHoUCommonFrameSizeGrabberTemplate" />
 			<EditBox parentKey="Search" inherits="SearchBoxTemplate">
 				<Size x="193" y="20" />
 				<Anchors>
@@ -679,13 +679,13 @@
 								end
 							end
 						end
-						LootReserve.Server.LootEdit:UpdateLootList();
+						LootReserveHoU.Server.LootEdit:UpdateLootList();
 					</OnTextChanged>
 				</Scripts>
 			</EditBox>
-			<Frame parentKey="Categories" inherits="LootReserveBackdropTemplate">
+			<Frame parentKey="Categories" inherits="LootReserveHoUBackdropTemplate">
 				<KeyValues>
-					<KeyValue key="backdropInfo" value="LOOTRESERVE_BACKDROP_BLACK_4" type="global" />
+					<KeyValue key="backdropInfo" value="LootReserveHoU_BACKDROP_BLACK_4" type="global" />
 				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPRIGHT" relativeKey="$parent.Search" relativePoint="BOTTOMRIGHT" x="1" />
@@ -696,7 +696,7 @@
 					<EdgeSize val="16" />
 				</Backdrop>
 				<Frames>
-					<ScrollFrame parentKey="Scroll" inherits="LootReserveScrollTemplate">
+					<ScrollFrame parentKey="Scroll" inherits="LootReserveHoUScrollTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" x="5" y="-5" />
 							<Anchor point="BOTTOMRIGHT" x="-21" y="5" />
@@ -704,9 +704,9 @@
 					</ScrollFrame>
 				</Frames>
 			</Frame>
-			<Frame parentKey="Loot" inherits="LootReserveBackdropTemplate">
+			<Frame parentKey="Loot" inherits="LootReserveHoUBackdropTemplate">
 				<KeyValues>
-					<KeyValue key="backdropInfo" value="LOOTRESERVE_BACKDROP_BLACK_4" type="global" />
+					<KeyValue key="backdropInfo" value="LootReserveHoU_BACKDROP_BLACK_4" type="global" />
 				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Search" relativePoint="TOPRIGHT" />
@@ -717,7 +717,7 @@
 					<EdgeSize val="16" />
 				</Backdrop>
 				<Frames>
-					<ScrollFrame parentKey="Scroll" inherits="LootReserveScrollTemplate">
+					<ScrollFrame parentKey="Scroll" inherits="LootReserveHoUScrollTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" x="5" y="-5" />
 							<Anchor point="BOTTOMRIGHT" x="-21" y="5" />
@@ -728,12 +728,12 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				LootReserve.Server.LootEdit:OnWindowLoad(self);
+				LootReserveHoU.Server.LootEdit:OnWindowLoad(self);
 			</OnLoad>
 			<OnShow>
 				PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
-				LootReserve.Server.LootEdit:UpdateCategories();
-				LootReserve.Server.LootEdit:UpdateLootList();
+				LootReserveHoU.Server.LootEdit:UpdateCategories();
+				LootReserveHoU.Server.LootEdit:UpdateLootList();
 			</OnShow>
 			<OnHide>
 				CloseMenus();

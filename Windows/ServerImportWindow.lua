@@ -1,9 +1,9 @@
-﻿LootReserve.Server.Import.Separator        = ",";
-LootReserve.Server.Import.UseHeaders       = false;
-LootReserve.Server.Import.MatchPlayerNames = true;
-LootReserve.Server.Import.SkipNotInRaid    = false;
-LootReserve.Server.Import.MatchItemNames   = false;
-LootReserve.Server.Import.Columns          = { };
+﻿LootReserveHoU.Server.Import.Separator        = ",";
+LootReserveHoU.Server.Import.UseHeaders       = false;
+LootReserveHoU.Server.Import.MatchPlayerNames = true;
+LootReserveHoU.Server.Import.SkipNotInRaid    = false;
+LootReserveHoU.Server.Import.MatchItemNames   = false;
+LootReserveHoU.Server.Import.Columns          = { };
 
 local function ParseCSVLine(line, sep)
     local res = { };
@@ -57,17 +57,17 @@ end
 
 local function ParseClass(value)
     if value and type(value) == "string" then
-        value = LootReserve.Constants.ClassLocalizedToFilename[value] or value;
-        value = tonumber(LootReserve.Constants.ClassFilenameToClassID[value]);
+        value = LootReserveHoU.Constants.ClassLocalizedToFilename[value] or value;
+        value = tonumber(LootReserveHoU.Constants.ClassFilenameToClassID[value]);
     end
     return value;
 end
 
-function LootReserve.Server.Import:UpdateReservesList()
+function LootReserveHoU.Server.Import:UpdateReservesList()
     if not self.Window:IsShown() then return; end
 
-    self.Window.Header.Name:SetWidth(LootReserve:IsCrossRealm() and 300 or 200);
-    self.Window:SetMinResize(LootReserve:IsCrossRealm() and 490 or 390, 440);
+    self.Window.Header.Name:SetWidth(LootReserveHoU:IsCrossRealm() and 300 or 200);
+    self.Window:SetMinResize(LootReserveHoU:IsCrossRealm() and 490 or 390, 440);
 
     local list = self.Window.Scroll.Container;
     list.Frames = list.Frames or { };
@@ -87,7 +87,7 @@ function LootReserve.Server.Import:UpdateReservesList()
         list.LastIndex = list.LastIndex + 1;
         local frame = list.Frames[list.LastIndex];
         while not frame do
-            frame = CreateFrame("Frame", nil, list, "LootReserveServerImportReserveTemplate");
+            frame = CreateFrame("Frame", nil, list, "LootReserveHoUServerImportReserveTemplate");
 
             if #list.Frames == 0 then
                 frame:SetPoint("TOPLEFT", list, "TOPLEFT", 0, -4);
@@ -105,7 +105,7 @@ function LootReserve.Server.Import:UpdateReservesList()
         frame:Show();
 
         frame.Alt:SetShown(list.LastIndex % 2 == 0);
-        frame.Name:SetText(format("%s%s", LootReserve:ColoredPlayer(player, member.Class), LootReserve:IsPlayerOnline(player) == nil and format("|cFF808080 (%s)|r", member.NameMatchResult or "not in raid") or LootReserve:IsPlayerOnline(player) == false and "|cFF808080 (offline)|r" or ""));
+        frame.Name:SetText(format("%s%s", LootReserveHoU:ColoredPlayer(player, member.Class), LootReserveHoU:IsPlayerOnline(player) == nil and format("|cFF808080 (%s)|r", member.NameMatchResult or "not in raid") or LootReserveHoU:IsPlayerOnline(player) == false and "|cFF808080 (offline)|r" or ""));
 
         local missing = { };
         local last = 0;
@@ -114,7 +114,7 @@ function LootReserve.Server.Import:UpdateReservesList()
             last = index;
             local button = frame.ReservesFrame.Items[last];
             while not button do
-                button = CreateFrame("Button", nil, frame.ReservesFrame, "LootReserveServerImportItemTemplate");
+                button = CreateFrame("Button", nil, frame.ReservesFrame, "LootReserveHoUServerImportItemTemplate");
                 if last == 1 then
                     button:SetPoint("LEFT", frame.ReservesFrame, "LEFT");
                 else
@@ -124,7 +124,7 @@ function LootReserve.Server.Import:UpdateReservesList()
                 button = frame.ReservesFrame.Items[last];
             end
             button:Show();
-            button.Item = LootReserve.ItemCache:Item(itemID);
+            button.Item = LootReserveHoU.ItemCache:Item(itemID);
             if not button.Item:IsCached() and button.Item:GetID() ~= 0 then
                 table.insert(missing, button.Item)
             end
@@ -148,7 +148,7 @@ function LootReserve.Server.Import:UpdateReservesList()
         end
         if #missing > 0 then
             if not self.PendingReservesListUpdate or self.PendingReservesListUpdate:IsComplete() then
-                self.PendingReservesListUpdate = LootReserve.ItemCache:OnCache(missing, function()
+                self.PendingReservesListUpdate = LootReserveHoU.ItemCache:OnCache(missing, function()
                     self:UpdateReservesList();
                 end);
             end
@@ -158,7 +158,7 @@ function LootReserve.Server.Import:UpdateReservesList()
         end
     end
 
-    for player, member in LootReserve:Ordered(data, function(aMember, bMember, aPlayer, bPlayer) return aPlayer < bPlayer; end) do
+    for player, member in LootReserveHoU:Ordered(data, function(aMember, bMember, aPlayer, bPlayer) return aPlayer < bPlayer; end) do
         createFrame(player, member);
     end
 
@@ -169,7 +169,7 @@ function LootReserve.Server.Import:UpdateReservesList()
     list:GetParent():UpdateScrollChildRect();
 end
 
-function LootReserve.Server.Import:InputUpdated()
+function LootReserveHoU.Server.Import:InputUpdated()
     self.Separator = nil;
     self.UseHeaders = nil;
     self.Columns = nil;
@@ -180,7 +180,7 @@ function LootReserve.Server.Import:InputUpdated()
     self.Window.InputOptions.Input.UseHeaders:SetChecked(self.UseHeaders);
 end
 
-function LootReserve.Server.Import:InputOptionsUpdated()
+function LootReserveHoU.Server.Import:InputOptionsUpdated()
     local input = self.Window.Input.Scroll.EditBox:GetText();
     input = input:gsub("    ", "\t");
 
@@ -279,7 +279,7 @@ function LootReserve.Server.Import:InputOptionsUpdated()
         last = i;
         local frame = list.Columns[i];
         while not frame do
-            frame = CreateFrame("Frame", nil, list, "LootReserveServerImportOptionColumnTemplate");
+            frame = CreateFrame("Frame", nil, list, "LootReserveHoUServerImportOptionColumnTemplate");
             if #list.Columns == 1 then
                 frame:SetPoint("TOPLEFT", list, "TOPLEFT", -10, -12);
             else
@@ -306,7 +306,7 @@ function LootReserve.Server.Import:InputOptionsUpdated()
     self:SessionSettingsUpdated();
 end
 
-function LootReserve.Server.Import:SessionSettingsUpdated()
+function LootReserveHoU.Server.Import:SessionSettingsUpdated()
     -- Gather indexes of used columns
     local playerColumns = { };
     local itemColumns = { };
@@ -381,9 +381,9 @@ function LootReserve.Server.Import:SessionSettingsUpdated()
                         local itemID = row[itemColumn];
                         if itemID and itemID ~= 0 and itemID ~= "" then
                             if type(itemID) == "string" then
-                                LootReserve.ItemSearch:Load();
-                                if not LootReserve.ItemSearch.FullCache:IsComplete() then
-                                    LootReserve.ItemSearch.FullCache:SetSpeed(LootReserve.ItemSearch.ZoomSpeed);
+                                LootReserveHoU.ItemSearch:Load();
+                                if not LootReserveHoU.ItemSearch.FullCache:IsComplete() then
+                                    LootReserveHoU.ItemSearch.FullCache:SetSpeed(LootReserveHoU.ItemSearch.ZoomSpeed);
                                     
                                     if not self.PendingInputOptionsUpdate then
                                         self.PendingInputOptionsUpdate = true;
@@ -392,7 +392,7 @@ function LootReserve.Server.Import:SessionSettingsUpdated()
                                             self:InputOptionsUpdated();
                                         end);
                                     end
-                                    return format("Creating item name database... (%d%%)|n|nInstall/Update ItemCache to remember the item database between sessions", LootReserve.ItemSearch.FullCache:GetProgress(0));
+                                    return format("Creating item name database... (%d%%)|n|nInstall/Update ItemCache to remember the item database between sessions", LootReserveHoU.ItemSearch.FullCache:GetProgress(0));
                                 end
                             end
                         end
@@ -407,9 +407,9 @@ function LootReserve.Server.Import:SessionSettingsUpdated()
         if self.MatchPlayerNames then
             simplifiedRaidNames        = { };
             simplifiedRaidNamesByClass = { };
-            LootReserve:ForEachRaider(function(name)
-                local simplified = LootReserve:SimplifyName(name);
-                local class      = select(3, LootReserve:UnitClass(name));
+            LootReserveHoU:ForEachRaider(function(name)
+                local simplified = LootReserveHoU:SimplifyName(name);
+                local class      = select(3, LootReserveHoU:UnitClass(name));
                 local existing   = simplifiedRaidNames[simplified];
                 if not simplifiedRaidNamesByClass[class] then
                     simplifiedRaidNamesByClass[class] = { };
@@ -436,7 +436,7 @@ function LootReserve.Server.Import:SessionSettingsUpdated()
         local itemReserveCountByPlayer = { };
 
         local function ParseRow(player, nameMatchResult, itemID, itemName, row, itemCount, playerCount)
-            if player and (LootReserve:IsPlayerOnline(player) ~= nil or not self.SkipNotInRaid) then
+            if player and (LootReserveHoU:IsPlayerOnline(player) ~= nil or not self.SkipNotInRaid) then
 
                 if not self.Members[player] then
                     self.Members[player] =
@@ -462,23 +462,23 @@ function LootReserve.Server.Import:SessionSettingsUpdated()
                     itemReserveCountByPlayer[player] = itemReserveCountByPlayer[player] or { };
                     itemReserveCountByPlayer[player][itemID] = (itemReserveCountByPlayer[player][itemID] or 0) + 1;
                     member.ReservesDelta = member.ReservesDelta or row.Delta;
-                    local conditions = LootReserve.Server:GetNewSessionItemConditions()[itemID];
+                    local conditions = LootReserveHoU.Server:GetNewSessionItemConditions()[itemID];
                     local class = select(3, UnitClass(player)) or row.Class;
                     member.Class = member.Class or class;
-                    local className = class and select(2, LootReserve:GetClassInfo(class));
+                    local className = class and select(2, LootReserveHoU:GetClassInfo(class));
                     if itemID == 0 then
                         member.InvalidReasons[#member.ReservedItems] = "Item with the name \"" .. itemName .. "\" was not be found|nor it can't be reserved due to session settings.";
-                    elseif not (LootReserve.Data:IsItemInCategories(itemID, LootReserve.Server.NewSessionSettings.LootCategories) or conditions and conditions.Custom) or not LootReserve.ItemConditions:TestServer(itemID) then
+                    elseif not (LootReserveHoU.Data:IsItemInCategories(itemID, LootReserveHoU.Server.NewSessionSettings.LootCategories) or conditions and conditions.Custom) or not LootReserveHoU.ItemConditions:TestServer(itemID) then
                         member.InvalidReasons[#member.ReservedItems] = "Item can't be reserved due to session settings.|nChange to the appropriate raid map or add this item as a custom item.";
-                    elseif conditions and conditions.ClassMask and class and not LootReserve.ItemConditions:TestClassMask(conditions.ClassMask, class) then
+                    elseif conditions and conditions.ClassMask and class and not LootReserveHoU.ItemConditions:TestClassMask(conditions.ClassMask, class) then
                         member.InvalidReasons[#member.ReservedItems] = player .. "'s class cannot reserve this item.|nEdit the raid loot to change the class restrictions on this item, or it will not be imported.";
-                    elseif LootReserve.Server.NewSessionSettings.Equip and className and not LootReserve.ItemConditions:IsItemUsable(itemID, className) then
+                    elseif LootReserveHoU.Server.NewSessionSettings.Equip and className and not LootReserveHoU.ItemConditions:IsItemUsable(itemID, className) then
                         member.InvalidReasons[#member.ReservedItems] = player .. "'s class cannot reserve this item.|nEdit the raid loot to change the class restrictions on this item, or it will not be imported.";
                     elseif conditions and conditions.Limit and itemReserveCount[itemID] > conditions.Limit then
                         member.InvalidReasons[#member.ReservedItems] = "This item has hit the limit of how many times it can be reserved.|nEdit the raid loot to increase or remove the limit on this item, or it will not be imported.";
-                    elseif #member.ReservedItems > LootReserve.Server.NewSessionSettings.MaxReservesPerPlayer + (member.ReservesDelta or 0) then
+                    elseif #member.ReservedItems > LootReserveHoU.Server.NewSessionSettings.MaxReservesPerPlayer + (member.ReservesDelta or 0) then
                         member.InvalidReasons[#member.ReservedItems] = "Player has more reserved items than allowed.|nIncrease the number of allowed reserves, or this item will not be imported.";
-                    elseif itemReserveCountByPlayer[player][itemID] > LootReserve.Server.NewSessionSettings.Multireserve then
+                    elseif itemReserveCountByPlayer[player][itemID] > LootReserveHoU.Server.NewSessionSettings.Multireserve then
                         member.InvalidReasons[#member.ReservedItems] = "Player has reserved this item more times than allowed.|nIncrease the number of allowed multireserves, or this item will not be imported.";
                     end
                 end
@@ -509,8 +509,8 @@ function LootReserve.Server.Import:SessionSettingsUpdated()
                         -- Transform Item Name -> Item ID
                         if type(itemID) == "string" then
                             if self.ItemNameMatch then
-                                local query = LootReserve.ItemCache:FormatSearchText(itemID);
-                                local results = LootReserve.ItemCache:Filter(function(item) return item:Matches(query) end)
+                                local query = LootReserveHoU.ItemCache:FormatSearchText(itemID);
+                                local results = LootReserveHoU.ItemCache:Filter(function(item) return item:Matches(query) end)
                                 if #results == 1 then
                                     itemID = results[1]:GetID();
                                 end
@@ -518,8 +518,8 @@ function LootReserve.Server.Import:SessionSettingsUpdated()
                                 if type(itemID) == "string" then
                                     itemID = 0;
                                 end
-                                if LootReserve.Data:IsTokenReward(itemID) and not LootReserve.Server:GetNewSessionItemConditions()[itemID] then
-                                    itemID = LootReserve.Data:GetToken(itemID)
+                                if LootReserveHoU.Data:IsTokenReward(itemID) and not LootReserveHoU.Server:GetNewSessionItemConditions()[itemID] then
+                                    itemID = LootReserveHoU.Data:GetToken(itemID)
                                 end
                                 if not row.ItemNames[itemID] then
                                     row.ItemNames[itemID] = {Count = 0, Name = row[itemColumn]};
@@ -527,8 +527,8 @@ function LootReserve.Server.Import:SessionSettingsUpdated()
                                 row.ItemNames[itemID].Count = row.ItemNames[itemID].Count + 1;
                             end
                         else
-                            if LootReserve.Data:IsTokenReward(itemID) then
-                                itemID = LootReserve.Data:GetToken(itemID)
+                            if LootReserveHoU.Data:IsTokenReward(itemID) then
+                                itemID = LootReserveHoU.Data:GetToken(itemID)
                             end
                             row.ItemIDs[itemID] = row.ItemIDs[itemID] and row.ItemIDs[itemID] + 1 or 1;
                         end
@@ -539,10 +539,10 @@ function LootReserve.Server.Import:SessionSettingsUpdated()
                     
                     local nameMatchResult = nil;
                     if player and #player > 0 then
-                        player = LootReserve:Player(LootReserve:NormalizeName(player));
-                        if self.MatchPlayerNames and LootReserve:IsPlayerOnline(player) == nil then
+                        player = LootReserveHoU:Player(LootReserveHoU:NormalizeName(player));
+                        if self.MatchPlayerNames and LootReserveHoU:IsPlayerOnline(player) == nil then
                             if row.Class then
-                                local simplified = simplifiedRaidNamesByClass[row.Class] and simplifiedRaidNamesByClass[row.Class][LootReserve:SimplifyName(player)];
+                                local simplified = simplifiedRaidNamesByClass[row.Class] and simplifiedRaidNamesByClass[row.Class][LootReserveHoU:SimplifyName(player)];
                                 if not simplified then
                                     nameMatchResult = "not in raid";
                                 elseif type(simplified) == "string" then
@@ -551,7 +551,7 @@ function LootReserve.Server.Import:SessionSettingsUpdated()
                                     nameMatchResult = "ambiguous name";
                                 end
                             else
-                                local simplified = simplifiedRaidNames[LootReserve:SimplifyName(player)];
+                                local simplified = simplifiedRaidNames[LootReserveHoU:SimplifyName(player)];
                                 if not simplified then
                                     nameMatchResult = "not in raid";
                                 elseif type(simplified) == "string" then
@@ -588,15 +588,15 @@ function LootReserve.Server.Import:SessionSettingsUpdated()
     self.Window.ImportButton:SetEnabled(self.Members and next(self.Members));
 end
 
-function LootReserve.Server.Import:Import()
-    if LootReserve.Server.CurrentSession then return; end
+function LootReserveHoU.Server.Import:Import()
+    if LootReserveHoU.Server.CurrentSession then return; end
 
     if self.Members and next(self.Members) then
-        table.wipe(LootReserve.Server.NewSessionSettings.ImportedMembers);
+        table.wipe(LootReserveHoU.Server.NewSessionSettings.ImportedMembers);
         for player, member in pairs(self.Members) do
             for i, itemID in ipairs(member.ReservedItems) do
                 if not member.InvalidReasons[i] then
-                    LootReserve.Server.NewSessionSettings.ImportedMembers[player] = LootReserve.Server.NewSessionSettings.ImportedMembers[player] or {
+                    LootReserveHoU.Server.NewSessionSettings.ImportedMembers[player] = LootReserveHoU.Server.NewSessionSettings.ImportedMembers[player] or {
                         Class         = member.Class,
                         ReservesLeft  = nil,
                         ReservesDelta = 0,
@@ -605,11 +605,11 @@ function LootReserve.Server.Import:Import()
                         Locked        = nil,
                         OptedOut      = nil,
                     };
-                    table.insert(LootReserve.Server.NewSessionSettings.ImportedMembers[player].ReservedItems, itemID);
+                    table.insert(LootReserveHoU.Server.NewSessionSettings.ImportedMembers[player].ReservedItems, itemID);
                 end
             end
             if member.ReservesDelta then
-                LootReserve.Server.NewSessionSettings.ImportedMembers[player] = LootReserve.Server.NewSessionSettings.ImportedMembers[player] or {
+                LootReserveHoU.Server.NewSessionSettings.ImportedMembers[player] = LootReserveHoU.Server.NewSessionSettings.ImportedMembers[player] or {
                     Class         = member.Class,
                     ReservesLeft  = nil,
                     ReservesDelta = 0,
@@ -618,20 +618,20 @@ function LootReserve.Server.Import:Import()
                     Locked        = nil,
                     OptedOut      = nil,
                 };
-                LootReserve.Server.NewSessionSettings.ImportedMembers[player].ReservesDelta = member.ReservesDelta
+                LootReserveHoU.Server.NewSessionSettings.ImportedMembers[player].ReservesDelta = member.ReservesDelta
             end
         end
     end
     self.Window:Hide();
-    LootReserve.Server.MembersEdit.Window:Show();
-    LootReserve.Server.MembersEdit:UpdateMembersList();
+    LootReserveHoU.Server.MembersEdit.Window:Show();
+    LootReserveHoU.Server.MembersEdit:UpdateMembersList();
 end
 
-function LootReserve.Server.Import:OnWindowLoad(window)
+function LootReserveHoU.Server.Import:OnWindowLoad(window)
     self.Window = window;
     self.Window.TopLeftCorner:SetSize(32, 32); -- Blizzard UI bug?
-    self.Window.TitleText:SetText("LootReserve Host - Import");
-    self.Window:SetMinResize(LootReserve:IsCrossRealm() and 490 or 390, 460);
+    self.Window.TitleText:SetText("LootReserveHoU Host - Import");
+    self.Window:SetMinResize(LootReserveHoU:IsCrossRealm() and 490 or 390, 460);
     self.Window.InputOptions.Input.MatchPlayerNames:SetChecked(self.MatchPlayerNames);
     self:InputUpdated();
 end

@@ -1,13 +1,13 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<Script file="ServerExportWindow.lua" />
-	<Frame name="LootReserveServerExportWindow" parent="UIParent" inherits="BasicFrameTemplateWithInset" toplevel="true" movable="true" resizable="true" enableMouse="true" clampedToScreen="true" hidden="true">
+	<Frame name="LootReserveHoUServerExportWindow" parent="UIParent" inherits="BasicFrameTemplateWithInset" toplevel="true" movable="true" resizable="true" enableMouse="true" clampedToScreen="true" hidden="true">
 		<Size x="300" y="150" />
 		<Anchors>
 			<Anchor point="CENTER" />
 		</Anchors>
 		<Frames>
-			<Button inherits="LootReserveCommonFrameMovingHeaderTemplate" />
-			<Button inherits="LootReserveCommonFrameSizeGrabberTemplate" />
+			<Button inherits="LootReserveHoUCommonFrameMovingHeaderTemplate" />
+			<Button inherits="LootReserveHoUCommonFrameSizeGrabberTemplate" />
 			<Button parentKey="OutputReservesButton" inherits="UIPanelButtonTemplate" text="Reserves">
 				<Size x="90" y="23" />
 				<Anchors>
@@ -15,10 +15,10 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						if LootReserve.Server.Export.PendingRollsExportTextUpdate then
-						  LootReserve.Server.Export.PendingRollsExportTextUpdate:Cancel();
+						if LootReserveHoU.Server.Export.PendingRollsExportTextUpdate then
+						  LootReserveHoU.Server.Export.PendingRollsExportTextUpdate:Cancel();
 						end
-						LootReserve.Server.Export:UpdateReservesExportText();
+						LootReserveHoU.Server.Export:UpdateReservesExportText();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -29,10 +29,10 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						if LootReserve.Server.Export.PendingRollsExportTextUpdate then
-						  LootReserve.Server.Export.PendingRollsExportTextUpdate:Cancel();
+						if LootReserveHoU.Server.Export.PendingRollsExportTextUpdate then
+						  LootReserveHoU.Server.Export.PendingRollsExportTextUpdate:Cancel();
 						end
-						LootReserve.Server.Export:UpdateRollsExportText(true);
+						LootReserveHoU.Server.Export:UpdateRollsExportText(true);
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -43,10 +43,10 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						if LootReserve.Server.Export.PendingRollsExportTextUpdate then
-						  LootReserve.Server.Export.PendingRollsExportTextUpdate:Cancel();
+						if LootReserveHoU.Server.Export.PendingRollsExportTextUpdate then
+						  LootReserveHoU.Server.Export.PendingRollsExportTextUpdate:Cancel();
 						end
-						LootReserve.Server.Export:UpdateRollsExportText();
+						LootReserveHoU.Server.Export:UpdateRollsExportText();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -82,7 +82,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				LootReserve.Server.Export:OnWindowLoad(self);
+				LootReserveHoU.Server.Export:OnWindowLoad(self);
 			</OnLoad>
 			<OnShow>
 				PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);

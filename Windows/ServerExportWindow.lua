@@ -1,16 +1,16 @@
 
 
-function LootReserve.Server.Export:UpdateReservesExportText()
-    local members = LootReserve.Server.CurrentSession and LootReserve.Server.CurrentSession.Members or LootReserve.Server.NewSessionSettings.ImportedMembers;
+function LootReserveHoU.Server.Export:UpdateReservesExportText()
+    local members = LootReserveHoU.Server.CurrentSession and LootReserveHoU.Server.CurrentSession.Members or LootReserveHoU.Server.NewSessionSettings.ImportedMembers;
     local text = "";
     if members and next(members) then
-        for player, member in LootReserve:Ordered(members, function(aMember, bMember, aPlayer, bPlayer) return aPlayer < bPlayer; end) do
+        for player, member in LootReserveHoU:Ordered(members, function(aMember, bMember, aPlayer, bPlayer) return aPlayer < bPlayer; end) do
             local counts = { };
             for i, itemID in ipairs(member.ReservedItems) do
                 counts[itemID] = (counts[itemID] or 0) + 1;
             end
             for itemID, count in pairs(counts) do
-                text = text .. format("\n%s,%s,%d,%d,%d,%d", player, member.Class and select(2, LootReserve:GetClassInfo(member.Class)) or "", member.ReservesDelta, member.RollBonus[itemID], itemID, count);
+                text = text .. format("\n%s,%s,%d,%d,%d,%d", player, member.Class and select(2, LootReserveHoU:GetClassInfo(member.Class)) or "", member.ReservesDelta, member.RollBonus[itemID], itemID, count);
             end
         end
         text = "Player,Class,ExtraReserves,RollBonus,Item,Count" .. text;
@@ -18,11 +18,11 @@ function LootReserve.Server.Export:UpdateReservesExportText()
     self:SetText(text);
 end
 
-function LootReserve.Server.Export:UpdateRollsExportText(onlySession)
+function LootReserveHoU.Server.Export:UpdateRollsExportText(onlySession)
     local minTime = 0;
     if onlySession then
-        if LootReserve.Server.CurrentSession then
-            minTime = LootReserve.Server.CurrentSession.StartTime;
+        if LootReserveHoU.Server.CurrentSession then
+            minTime = LootReserveHoU.Server.CurrentSession.StartTime;
         else
             minTime = -1
         end
@@ -31,7 +31,7 @@ function LootReserve.Server.Export:UpdateRollsExportText(onlySession)
     local missing = { };
     
     if minTime >= 0 then
-        for _, roll in ipairs(LootReserve.Server.RollHistory) do
+        for _, roll in ipairs(LootReserveHoU.Server.RollHistory) do
             if roll.StartTime >= minTime then
                 if roll.Item:IsCached() then
                     if #missing == 0 then
@@ -76,30 +76,30 @@ function LootReserve.Server.Export:UpdateRollsExportText(onlySession)
     self:SetText(text);
     
     if #missing > 0 then
-        if #missing > LootReserve.ItemSearch.BatchCap then
-            for i = LootReserve.ItemSearch.BatchCap + 1, #missing do
+        if #missing > LootReserveHoU.ItemSearch.BatchCap then
+            for i = LootReserveHoU.ItemSearch.BatchCap + 1, #missing do
                 missing[i] = nil;
             end
         end
         if not self.PendingRollsExportTextUpdate or self.PendingRollsExportTextUpdate:IsComplete() then
-            self.PendingRollsExportTextUpdate = LootReserve.ItemCache:OnCache(missing, function()
+            self.PendingRollsExportTextUpdate = LootReserveHoU.ItemCache:OnCache(missing, function()
                 self:UpdateRollsExportText();
             end);
         end
-        self.PendingRollsExportTextUpdate:SetSpeed(math.ceil(#missing/LootReserve.ItemSearch.BatchFrames));
+        self.PendingRollsExportTextUpdate:SetSpeed(math.ceil(#missing/LootReserveHoU.ItemSearch.BatchFrames));
     end
 end
 
-function LootReserve.Server.Export:SetText(text)
+function LootReserveHoU.Server.Export:SetText(text)
     self.Window.Output.Scroll.EditBox:SetText(text);
     self.Window.Output.Scroll.EditBox:SetFocus();
     self.Window.Output.Scroll.EditBox:HighlightText();
     self.Window.Output.Scroll:UpdateScrollChildRect();
 end
 
-function LootReserve.Server.Export:OnWindowLoad(window)
+function LootReserveHoU.Server.Export:OnWindowLoad(window)
     self.Window = window;
     self.Window.TopLeftCorner:SetSize(32, 32); -- Blizzard UI bug?
-    self.Window.TitleText:SetText("LootReserve Host - Export");
+    self.Window.TitleText:SetText("LootReserveHoU Host - Export");
     self.Window:SetMinResize(300, 130);
 end

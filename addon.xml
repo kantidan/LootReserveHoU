@@ -3,7 +3,7 @@
   <Include file="libs\libs.xml"/>
   
   
-  <Script file="LootReserve.lua"/>
+  <Script file="LootReserveHoU.lua"/>
   <Script file="Constants.lua"/>
   <Script file="ItemSearch.lua"/>
   <Script file="Client.lua"/>

@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<Frame name="LootReserveBackdropTemplate" virtual="true" inherits="BackdropTemplate" />
-	<Button name="LootReserveCommonFrameMovingHeaderTemplate" virtual="true">
+	<Frame name="LootReserveHoUBackdropTemplate" virtual="true" inherits="BackdropTemplate" />
+	<Button name="LootReserveHoUCommonFrameMovingHeaderTemplate" virtual="true">
 		<Size y="22" />
 		<Anchors>
 			<Anchor point="TOPLEFT" />
@@ -15,16 +15,16 @@
 				if self:GetParent():IsProtected() and InCombatLockdown() then return; end
 
 				local point, relativeFrame, relativePoint, x, y = self:GetParent():GetPoint(1);
-				x = LootReserve:Round(x);
-				y = LootReserve:Round(y);
-				if (point == "CENTER" or point == "TOP" or point == "BOTTOM") and (LootReserve:Round(self:GetParent():GetWidth())  % 2 == 1) then x = x + 0.5; end
-				if (point == "CENTER" or point == "LEFT" or point == "RIGHT") and (LootReserve:Round(self:GetParent():GetHeight()) % 2 == 1) then y = y + 0.5; end
+				x = LootReserveHoU:Round(x);
+				y = LootReserveHoU:Round(y);
+				if (point == "CENTER" or point == "TOP" or point == "BOTTOM") and (LootReserveHoU:Round(self:GetParent():GetWidth())  % 2 == 1) then x = x + 0.5; end
+				if (point == "CENTER" or point == "LEFT" or point == "RIGHT") and (LootReserveHoU:Round(self:GetParent():GetHeight()) % 2 == 1) then y = y + 0.5; end
 				self:GetParent():ClearAllPoints();
 				self:GetParent():SetPoint(point, relativeFrame, relativePoint, x, y);
 			</OnMouseUp>
 		</Scripts>
 	</Button>
-	<Button name="LootReserveCommonFrameSizeGrabberTemplate" virtual="true">
+	<Button name="LootReserveHoUCommonFrameSizeGrabberTemplate" virtual="true">
 		<Size x="16" y="16"/>
 		<Anchors>
 			<Anchor point="BOTTOMRIGHT" />
@@ -43,14 +43,14 @@
 				if self:GetParent():IsProtected() and InCombatLockdown() then return; end
 
 				local w, h = self:GetParent():GetSize();
-				self:GetParent():SetSize(LootReserve:Round(w), LootReserve:Round(h));
+				self:GetParent():SetSize(LootReserveHoU:Round(w), LootReserveHoU:Round(h));
 			</OnMouseUp>
 		</Scripts>
 		<NormalTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Up"/>
 		<HighlightTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Highlight"/>
 		<PushedTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Down"/>
 	</Button>
-	<Frame name="LootReserveTextWithButtonsTemplate" virtual="true">
+	<Frame name="LootReserveHoUTextWithButtonsTemplate" virtual="true">
 		<KeyValues>
 			<KeyValue key="font" value="GameFontNormal" type="global" />
 			<KeyValue key="textMargin" value="0" type="number" />
@@ -109,7 +109,7 @@
 			</OnSizeChanged>
 		</Scripts>
 	</Frame>
-	<Button name="LootReserveItemButtonTemplate" virtual="true">
+	<Button name="LootReserveHoUItemButtonTemplate" virtual="true">
 		<KeyValues>
 			<!--
 			<KeyValue key="tooltipRight" value="false" type="boolean" />
@@ -150,7 +150,7 @@
 						if button == "LeftButton" then
 							local item = self:GetParent():GetParent().Item;
 							if type(item) == "number" then
-								item = LootReserve.ItemCache(item);
+								item = LootReserveHoU.ItemCache(item);
 							end
 							item:OnCache(function() HandleModifiedItemClick(item:GetLink()); end)
 						end
@@ -164,7 +164,7 @@
 						else
 							GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 						end
-						GameTooltip:SetHyperlink(LootReserve.ItemCache:Item(self:GetParent():GetParent().Item):GetString());
+						GameTooltip:SetHyperlink(LootReserveHoU.ItemCache:Item(self:GetParent():GetParent().Item):GetString());
 						GameTooltip:Show();
 						if IsShiftKeyDown() then
 							GameTooltip_ShowCompareItem(GameTooltip)
@@ -224,7 +224,7 @@
 			</OnSizeChanged>
 		</Scripts>
 	</Button>
-	<ScrollFrame name="LootReserveScrollTemplate" inherits="UIPanelScrollFrameTemplate" virtual="true">
+	<ScrollFrame name="LootReserveHoUScrollTemplate" inherits="UIPanelScrollFrameTemplate" virtual="true">
 		<ScrollChild>
 			<Frame parentKey="Container">
 				<Size y="1" />
@@ -245,13 +245,13 @@
 			</OnSizeChanged>
 		</Scripts>
 	</ScrollFrame>
-	<Font name="LootReserveDurationStatusBarFont" font="Fonts\FRIZQT__.TTF" outline="NORMAL" virtual="true">
+	<Font name="LootReserveHoUDurationStatusBarFont" font="Fonts\FRIZQT__.TTF" outline="NORMAL" virtual="true">
 		<FontHeight>
 			<AbsValue val="11" />
 		</FontHeight>
 		<Color r="1" g="1" b="1" />
 	</Font>
-	<StatusBar name="LootReserveDurationStatusBar" virtual="true">
+	<StatusBar name="LootReserveHoUDurationStatusBar" virtual="true">
 		<KeyValues>
 			<!--
 			<KeyValue key="server" value="false" type="boolean" />
@@ -297,7 +297,7 @@
 					<TexCoords left="0" right="0.5" top="0" bottom="1" />
 					<Color r="0.5" g="1" b="0" />
 				</Texture>
-				<FontString parentKey="Text" inherits="LootReserveDurationStatusBarFont" text="2:34">
+				<FontString parentKey="Text" inherits="LootReserveHoUDurationStatusBarFont" text="2:34">
 					<Anchors>
 						<Anchor point="CENTER" />
 					</Anchors>
@@ -311,7 +311,7 @@
 				local min, value, max, pct = 0, 1, 1, 1;
 
 				if self.roll and self.server then
-					local roll = LootReserve.Server.RequestedRoll;
+					local roll = LootReserveHoU.Server.RequestedRoll;
 					if roll and roll.MaxDuration ~= 0 then
 						hasDuration = true;
 						active = true;
@@ -319,7 +319,7 @@
 						max = roll.MaxDuration;
 					end
 				elseif self.roll then
-					local roll = LootReserve.Client.RollRequest;
+					local roll = LootReserveHoU.Client.RollRequest;
 					if roll.Sender and roll.MaxDuration and roll.MaxDuration ~= 0 then
 						hasDuration = true;
 						active = true;
@@ -327,7 +327,7 @@
 						max = roll.MaxDuration;
 					end
 				elseif self.server then
-					local session = LootReserve.Server.CurrentSession;
+					local session = LootReserveHoU.Server.CurrentSession;
 					if session and session.Settings.Duration ~= 0 then
 						hasDuration = true;
 						active = session.AcceptingReserves;
@@ -335,7 +335,7 @@
 						max = session.Settings.Duration;
 					end
 				else
-					local session = LootReserve.Client;
+					local session = LootReserveHoU.Client;
 					if session.SessionServer and session.MaxDuration and session.MaxDuration ~= 0 then
 						hasDuration = true;
 						active = session.AcceptingReserves;
@@ -379,7 +379,7 @@
 			</OnUpdate>
 		</Scripts>
 	</StatusBar>
-	<CheckButton name="LootReserveCheckBoxTemplate" virtual="true">
+	<CheckButton name="LootReserveHoUCheckBoxTemplate" virtual="true">
 		<KeyValues>
 			<!--
 			<KeyValue key="text" value="" type="string" />
@@ -430,7 +430,7 @@
 		<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
 		<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>		
 	</CheckButton>
-	<Button name="LootReserveSettingsButtonTemplate" parentKey="ButtonSettings" inherits="UIMenuButtonStretchTemplate" frameLevel="100" virtual="true">
+	<Button name="LootReserveHoUSettingsButtonTemplate" parentKey="ButtonSettings" inherits="UIMenuButtonStretchTemplate" frameLevel="100" virtual="true">
 		<Size x="20" y="20" />
 		<Anchors>
 			<Anchor point="TOPLEFT" y="-1" />
@@ -467,7 +467,7 @@
 			<OnLeave function="GameTooltip_Hide" />
 		</Scripts>
 	</Button>
-	<Button name="LootReserveGlowingButtonTemplate" inherits="UIMenuButtonStretchTemplate" virtual="true">
+	<Button name="LootReserveHoUGlowingButtonTemplate" inherits="UIMenuButtonStretchTemplate" virtual="true">
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture parentKey="GlowLeft" file="Interface\CHATFRAME\ChatFrameTab-NewMessage" alphaMode="ADD" alpha="0.5" hidden="true">

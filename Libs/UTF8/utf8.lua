@@ -262,7 +262,7 @@ local function utf8replace(s, mapping)
 	return newstr
 end
 
--- CUSTOM LOOTRESERVE ADDITION
+-- CUSTOM LootReserveHoU ADDITION
 if not string.utf8replace then
 	string.utf8replace = utf8replace
 end
